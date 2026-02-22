@@ -12,3 +12,48 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  orders   Order[]
+}
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  products    Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal    @db.Decimal(10, 2)
+  stockStatus String   @default("in_stock")
+  imageUrl    String
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  orderItems   OrderItem[]
+}
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Decimal   @db.Decimal(10, 2)
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+model Order {
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  totalPrice Decimal       @db.Decimal(10, 2)
+  phone      String
+  address    String
+  createdAt  DateTime    @default(now())
+  user       User        @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+}

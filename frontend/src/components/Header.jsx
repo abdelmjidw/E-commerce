@@ -1,29 +1,45 @@
-import React from 'react'
+
 
 // components/Header.jsx
-import { Search, ShoppingCart, User } from 'lucide-react';
+import { 
+  Search, 
+  ShoppingCart, 
+  User, 
+  List, 
+} from 'lucide-react';
 
-export const Header = () => (
-  <header className="w-full">
-    {/* Top Bar */}
-    <div className="flex justify-between items-center px-8 py-4 bg-white border-b">
-      <h1 className="text-2xl font-bold text-blue-600">Galaxy Digital</h1>
-      <div className="flex-1 mx-10 relative">
-        <input type="text" placeholder="بحث عن الأجهزة المنزلية..." className="w-full bg-gray-100 p-2 rounded-lg" />
-        <Search className="absolute left-3 top-2 text-gray-400" size={20} />
-      </div>
-      <div className="flex gap-6 items-center">
-        <div className="flex items-center gap-1"><User size={20}/> دخول</div>
-        <div className="flex items-center gap-1"><ShoppingCart size={20}/> السلة</div>
+const Header = () => (
+  <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 lg:px-8">
+      <div className="flex justify-between items-center py-4">
+        <div className="flex items-center gap-2 cursor-pointer">
+          <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+            <List size={24} />
+          </div>
+          <h1 className="text-2xl font-black text-blue-600 tracking-tighter">GALAXY DIGITAL</h1>
+        </div>
+        <div className="hidden md:flex flex-1 max-w-xl mx-10">
+          <div className="relative w-full group">
+            <input 
+              type="text" 
+              placeholder="Search appliances..." 
+              className="w-full bg-gray-100 border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 transition-all outline-none text-sm"
+            />
+            <Search className="absolute left-4 top-2.5 text-gray-400 group-focus-within:text-blue-500" size={18} />
+          </div>
+        </div>
+        <div className="flex items-center gap-5">
+          <button className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-blue-600 transition">
+            <User size={20} />
+            <span>Login</span>
+          </button>
+          <div className="relative cursor-pointer hover:scale-105 transition">
+            <ShoppingCart size={24} className="text-blue-600" />
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full">3</span>
+          </div>
+        </div>
       </div>
     </div>
-    {/* Categories Bar */}
-    <nav className="flex justify-center gap-6 py-3 bg-white shadow-sm overflow-x-auto">
-      {['الثلاجات', 'الغسالات', 'التكييف', 'التلفزيونات'].map(cat => (
-        <span key={cat} className="px-4 py-1 bg-blue-50 text-blue-700 rounded-full text-sm cursor-pointer">
-          {cat}
-        </span>
-      ))}
-    </nav>
   </header>
 );
+export default Header;

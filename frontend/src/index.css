@@ -1,4 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@layer base {
+  body { font-family: 'Poppins', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+}
+
+@theme inline {
+  --color-primary: #4200FF;
+  
+}
+*{
+  /* margin: 0;
+  padding: 0; */
+  box-sizing: border-box;
+}
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

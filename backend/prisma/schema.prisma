@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,47 +7,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  email    String   @unique
-  password String
-  orders   Order[]
+enum Role {
+  USER
+  ADMIN
 }
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   Boolean   @default(false)
+
+  orders    Order[]
+  reviews   Review[]
+  cart      Cart?
+  wishlist  Wishlist[]
+}
+
 model Category {
   id          Int       @id @default(autoincrement())
   name        String    @unique
   description String?
+  createdAt   DateTime  @default(now())
+  deleted     Boolean   @default(false)
+
   products    Product[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  price       Decimal    @db.Decimal(10, 2)
-  stockStatus String   @default("in_stock")
-  imageUrl    String
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id])
-  orderItems   OrderItem[]
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  price         Decimal     @db.Decimal(10, 2)
+  originalPrice Decimal?    @db.Decimal(10, 2)
+  stock         Int         @default(0)
+  imageUrl      String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deleted       Boolean     @default(false)
+
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
+
+  orderItems    OrderItem[]
+  reviews       Review[]
+  wishlist      Wishlist[]
+  cartItems     CartItem[]
 }
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  quantity  Int      @default(1)
+
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
+}
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  totalPrice    Decimal       @db.Decimal(10, 2)
+  phone         String
+  address       String
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  couponId      Int?
+  createdAt     DateTime      @default(now())
+
+  user          User          @relation(fields: [userId], references: [id])
+  orderItems    OrderItem[]
+  coupon        Coupon?       @relation(fields: [couponId], references: [id])
+}
+
 model OrderItem {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   orderId   Int
   productId Int
   quantity  Int
-  price     Decimal   @db.Decimal(10, 2)
-  order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  price     Decimal  @db.Decimal(10, 2)
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
 }
-model Order {
-  id         Int         @id @default(autoincrement())
-  userId     Int
-  totalPrice Decimal       @db.Decimal(10, 2)
-  phone      String
-  address    String
-  createdAt  DateTime    @default(now())
-  user       User        @relation(fields: [userId], references: [id])
-  orderItems OrderItem[]
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  userId    Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+}
+
+model Coupon {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  discount  Float
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  orders    Order[]
 }

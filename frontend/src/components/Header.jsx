@@ -1,5 +1,3 @@
-
-
 // components/Header.jsx
 import { 
   Search, 
@@ -13,10 +11,10 @@ const Header = () => (
     <div className="max-w-7xl mx-auto px-4 lg:px-8">
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center gap-2 cursor-pointer">
-          <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+          <div className="bg-primary p-1.5 rounded-lg text-white">
             <List size={24} />
           </div>
-          <h1 className="text-2xl font-black text-blue-600 tracking-tighter">GALAXY DIGITAL</h1>
+          <h1 className="text-2xl font-black text-primary tracking-tighter">GALAXY DIGITAL</h1>
         </div>
         <div className="hidden md:flex flex-1 max-w-xl mx-10">
           <div className="relative w-full group">
@@ -29,10 +27,11 @@ const Header = () => (
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <button className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-blue-600 transition">
+          <button className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition">
             <User size={20} />
-            <span>Login</span>
+            <span>Sign In/Sign Up</span>
           </button>
+          <div className="w-[1.5px] h-8 bg-gray-300" />
           <div className="relative cursor-pointer hover:scale-105 transition">
             <ShoppingCart size={24} className="text-blue-600" />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full">3</span>

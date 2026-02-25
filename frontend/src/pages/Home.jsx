@@ -9,10 +9,9 @@ import {
   ChevronLeft,
   Phone,
 } from "lucide-react";
-
-// استيراد Swiper React components
+import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
-// استيراد Swiper styles
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -142,6 +141,80 @@ const CATEGORIES_SECTION = [
   },
 ];
 
+const REVIEWS = [
+  {
+    id: 1,
+    name: "Ahmed B.",
+    rating: 5,
+    comment: "Excellent product! Fast delivery and amazing quality.",
+    product: 'Samsung 55" Crystal UHD 4K Smart TV',
+  },
+  {
+    id: 2,
+    name: "Sara L.",
+    rating: 4,
+    comment: "The washing machine works perfectly. Very happy with it!",
+    product: "LG Vivace 9KG Front Load Washing Machine",
+  },
+  {
+    id: 3,
+    name: "Youssef M.",
+    rating: 5,
+    comment: "Refrigerator keeps everything super fresh. Highly recommend.",
+    product: "Bosch Serie 4 NoFrost Refrigerator 400L",
+  },
+];
+const ReviewCard = ({ review }) => (
+  <div className="bg-white border border-gray-100 rounded-3xl p-6 m-1 shadow-sm hover:shadow-md transition-shadow duration-500">
+    <div className="flex items-center mb-4">
+      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+        {review.name.charAt(0)}
+      </div>
+      <div className="ml-4">
+        <h4 className="font-bold text-gray-800 text-sm">{review.name}</h4>
+        <p className="text-xs text-gray-400">{review.product}</p>
+      </div>
+    </div>
+    <p className="text-gray-700 text-sm mb-3">{review.comment}</p>
+    <div className="flex gap-1">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-300"}>
+          ★
+        </span>
+      ))}
+    </div>
+  </div>
+);
+const ReviewsSection = () => (
+  <section className="max-w-7xl mx-auto px-4 lg:px-8 mt-16">
+    <div className="flex justify-between items-end mb-10">
+      <div>
+        <h2 className="text-3xl text-gray-900 mb-2 tracking-tighter">Customer Reviews</h2>
+        <div className="h-1.5 w-20 bg-blue-600 rounded-full"></div>
+      </div>
+    </div>
+
+    <Swiper
+      modules={[Navigation, Pagination, Autoplay]}
+      slidesPerView={1}
+      spaceBetween={20}
+      navigation
+      pagination={{ clickable: true }}
+      autoplay={{ delay: 5000 }}
+      breakpoints={{
+        640: { slidesPerView: 1 },
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+      }}
+    >
+      {REVIEWS.map((review) => (
+        <SwiperSlide key={review.id}>
+          <ReviewCard review={review} />
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </section>
+);
 const CategorySection = () => (
   <section className="max-w-7xl mx-auto px-4 lg:px-8 mt-16">
     {/* Header Section */}
@@ -260,12 +333,12 @@ const Hero = () => {
 };
 
 const ProductCard = ({ product }) => (
-  <div className="bg-white border border-gray-100 rounded-3xl relative group hover:shadow-xl transition-all duration-500 cursor-pointer">
-    <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-black px-3 py-4 rounded-bl-3xl z-10 text-center leading-tight">
+  <div className="bg-white border border-gray-100 rounded-3xl relative group hover:shadow-md transition-all duration-500 cursor-pointer">
+    <div className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] align-middle font-black px-3 py-3 rounded-se-3xl rounded-bl-2xl z-10 text-center leading-tight">
       {product.discount}% <br /> OFF
     </div>
 
-    <div className="w-full  overflow-hidden ">
+    <div className="w-full rounded-3xl   overflow-hidden ">
       {" "}
       {/* optional extra wrapper */}
       <img
@@ -350,18 +423,19 @@ export default function GalaxyHome() {
             ))}
           </div>
         </section>
+        <ReviewsSection />
       </main>
 
       <a
         href="https://wa.me/2126XXXXXXXX"
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-8 right-8 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-50 flex items-center gap-2 group"
+        className="fixed bottom-8 right-8 bg-green-500 text-white p-3 rounded-full shadow-2xl  transition-transform z-50 flex items-center group"
       >
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold whitespace-nowrap">
+        <span className="max-w-0  overflow-hidden group-hover:max-w-xs transition-all duration-500 hover:pe-3 whitespace-nowrap">
           Order via WhatsApp
         </span>
-        <Phone size={24} />
+        <FaWhatsapp size={24} />
       </a>
     </div>
   );

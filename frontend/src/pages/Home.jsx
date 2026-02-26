@@ -258,7 +258,7 @@ const CategorySection = () => (
 );
 const Hero = () => {
   return (
-    <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-6 group">
+    <section className="max-w-7xl mx-auto px-4 lg:px-8  group">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
@@ -273,14 +273,14 @@ const Hero = () => {
         {HERO_SLIDES.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div
-              className="h-[450px] flex flex-col md:flex-row items-center px-10 md:px-17  relative overflow-hidden"
+              className="h-[750px] sm:h-[430px]   flex flex-col md:flex-row items-center px-10 py-5 md:px-17  relative overflow-hidden"
               style={{ backgroundColor: slide.color }}
             >
               <div className="flex-1 py-12 z-20">
                 <span className="bg-blue-600/20 text-blue-400 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block">
                   {slide.tag}
                 </span>
-                <h2 className="text-white text-5xl md:text-5xl font-black leading-tight mb-2 uppercase">
+                <h2 className="text-white text-3xl md:text-5xl font-black leading-tight mb-2 uppercase">
                   {slide.title} <br />{" "}
                   <span className="primary">{slide.subtitle}</span>
                 </h2>

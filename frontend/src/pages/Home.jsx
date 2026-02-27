@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 // Swiper Styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -189,7 +188,7 @@ const Hero = () => (
               <span className="bg-blue-600/20 text-blue-400 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 inline-block">
                 {slide.tag}
               </span>
-              <h2 className="text-white text-4xl md:text-6xl font-black leading-tight mb-4 uppercase">
+              <h2 className="text-white text-4xl md:text-5xl font-black leading-tight mb-4 uppercase">
                 {slide.title} <br />
                 <span className="text-blue-500">{slide.subtitle}</span>
               </h2>
@@ -227,7 +226,7 @@ export default function GalaxyHome() {
         initial="hidden"
         animate="visible"
         variants={fadeInDown}
-        className="bg-white py-4 border-b border-gray-100 sticky top-0 z-40 overflow-x-auto no-scrollbar"
+        className="bg-white flex py-4 border-b border-gray-100 sticky top-0 z-40 overflow-x-auto no-scrollbar"
       >
         <div className="max-w-7xl mx-auto px-4 flex gap-3">
           {CATEGORIES_NAV.map((cat, i) => (
@@ -244,7 +243,7 @@ export default function GalaxyHome() {
         </div>
       </motion.div>
 
-      <main className="pb-20 pt-8">
+      <main className="pb-20 ">
         <Hero />
 
         {/* Categories Grid */}

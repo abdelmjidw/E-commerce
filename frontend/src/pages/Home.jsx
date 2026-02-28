@@ -353,7 +353,7 @@ export default function GalaxyHome() {
 
       {/* WhatsApp Floating Button */}
       <motion.a
-        href="https://wa.me/2126XXXXXXXX"
+        href="https://wa.me/212608936659"
         target="_blank"
         rel="noreferrer"
         initial={{ scale: 0, opacity: 0 }}

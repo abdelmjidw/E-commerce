@@ -3,7 +3,7 @@ import Home from './pages/Home'
 import  Header  from './components/Header'
 import Footer from './components/Footer'
 import './App.css'
-import LoginModal from "../src/components/LoginModal.jsx";
+import AuthModal from "../src/components/AuthModal.jsx";
 
 function App() {
 
@@ -11,7 +11,7 @@ function App() {
   return (
     <>
     <Header/>
-    <LoginModal/>
+    <AuthModal/>
     <Routes>
         <Route path='/' element={<Home />} />
     </Routes>

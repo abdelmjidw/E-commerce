@@ -1,6 +1,6 @@
-import prisma from "../config/db";
+import prisma from "../config/db.js";
 import bcrypt from "bcryptjs";
-import { generateAccessToken } from "../utils/token";
+import { generateAccessToken } from "../utils/token.js";
 export const register = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -27,7 +27,7 @@ export const getMe = async (req, res) => {
 
 // 2. Register Function
 export const register = async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword ,role} = req.body;
 
   if (!email || !password || !name) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -48,6 +48,7 @@ export const register = async (req, res) => {
         name,
         email,
         password: hashedPassword,
+        role: role || "USER",
       },
     });
 

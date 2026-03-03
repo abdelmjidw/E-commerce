@@ -46,7 +46,7 @@ export const createProduct = async (req, res) => {
       data: { 
         name, 
         description, 
-        price: Number(price), // التأكد من أنه رقم
+        price: Number(price),
         originalPrice: originalPrice ? Number(originalPrice) : null,
         stock: Number(stock) || 0,
         imageUrl, 
@@ -59,11 +59,10 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// 4. تحديث المنتج (تعديل الحقول الرقمية)
+
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    // نقوم بفلترة البيانات للتأكد من أن الأرقام يتم تحويلها بشكل صحيح
     const updateData = { ...req.body };
     if (updateData.price) updateData.price = Number(updateData.price);
     if (updateData.stock) updateData.stock = Number(updateData.stock);
@@ -79,7 +78,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// 5. الحذف الناعم (Soft Delete)
+
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {

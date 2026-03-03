@@ -1,6 +1,6 @@
 import express from "express";
 import prisma from "../config/db.js";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 

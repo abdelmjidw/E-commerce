@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, User as UserIcon, Loader2, X } from "lucide-react";
+import API from "../api/api"; // Import the axios instance
 
 function AuthModal() {
   const { showLogin, closeLogin, login: setAuthStatus } = useAuth();
@@ -25,13 +26,13 @@ function AuthModal() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle Form Submission
+  // Handle Form Submission using Axios
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // Basic Validation for Registration
+    // Client-side Validation for Registration
     if (!isLogin && formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       setLoading(false);
@@ -39,20 +40,13 @@ function AuthModal() {
     }
 
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-    const url = `http://localhost:3000${endpoint}`;
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // Axios automatically stringifies the object to JSON
+      const response = await API.post(endpoint, formData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Authentication failed");
-      }
+      // In Axios, the server response is inside the 'data' property
+      const data = response.data;
 
       if (isLogin) {
         // Success Login logic
@@ -68,10 +62,12 @@ function AuthModal() {
       } else {
         // Success Registration logic
         alert("Account created successfully! Please sign in.");
-        setIsLogin(true); // Switch to login view
+        setIsLogin(true); 
       }
     } catch (err) {
-      setError(err.message);
+      // Axios handles errors differently: server messages are in err.response.data
+      const errorMessage = err.response?.data?.message || "Something went wrong. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -120,13 +116,12 @@ function AuthModal() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium animate-pulse">
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium animate-bounce">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Registration Fields */}
             {!isLogin && (
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Full Name</label>
@@ -144,7 +139,6 @@ function AuthModal() {
               </div>
             )}
 
-            {/* Common Fields */}
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1.5">Email Address</label>
               <div className="relative">

@@ -7,7 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-
+import reviewRoutes from  "./routes/reviewRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -20,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
@@ -30,5 +31,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Galaxy Digital Server running on port ${PORT}`));
+export default app;

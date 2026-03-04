@@ -58,8 +58,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({ 
       message: "User registered successfully", 
-      user: userWithoutPassword,
-      token 
+      user: userWithoutPassword
     });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });

@@ -1,19 +1,46 @@
 import prisma from "../config/db.js";
 import cloudinary from "../utils/cloudinary.js";
 
-// 1. جلب الكل مع دعم التصنيفات
+// جلب الكل مع دعم التصنيفات والترقيم (Pagination)
 export const getProducts = async (req, res) => {
-  const { categoryId } = req.query;
+  const { categoryId, page = 1, limit = 10 } = req.query;
+
   try {
-    const products = await prisma.product.findMany({
-      where: {
-        deleted: false,
-        ...(categoryId && { categoryId: Number(categoryId) }),
-      },
-      include: { category: { select: { name: true } } }, // جلب اسم التصنيف فقط لتقليل حجم البيانات
-      orderBy: { createdAt: 'desc' } // الأحدث أولاً
+    // تحويل القيم إلى أرقام
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // تحديد شروط الفلترة
+    const whereCondition = {
+      deleted: false,
+      ...(categoryId && { categoryId: Number(categoryId) }),
+    };
+
+    // تنفيذ الطلبين في وقت واحد (البيانات + العدد الإجمالي) لزيادة السرعة
+    const [products, totalCount] = await Promise.all([
+      prisma.product.findMany({
+        where: whereCondition,
+        include: { category: { select: { name: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip: skip,
+        take: limitNum,
+      }),
+      prisma.product.count({ where: whereCondition })
+    ]);
+
+    // حساب إجمالي الصفحات
+    const totalPages = Math.ceil(totalCount / limitNum);
+
+    res.json({
+      data: products,
+      pagination: {
+        totalProducts: totalCount,
+        totalPages: totalPages,
+        currentPage: pageNum,
+        pageSize: limitNum,
+      }
     });
-    res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error: error.message });
   }

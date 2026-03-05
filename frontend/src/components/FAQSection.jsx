@@ -13,7 +13,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => {
         className="flex justify-between items-center ring ring-white ring-offset-2 ring-offset-slate-50 dark:ring-offset-white font-medium rounded-lg border transition-all duration-300 py-3 sm:py-4 px-4 sm:px-6 cursor-pointer transform hover:scale-[1.01] hover:shadow-md bg-white"
         onClick={onToggle}
       >
-        <h2 className="text-sm sm:text-base md:text-lg font-semibold pr-3 sm:pr-4 leading-relaxed flex-1">
+        <h2 className="text-sm sm:text-base md:text-lg font-semibold pr-3 sm:pr-4 leading-relaxed flex-1 text-gray-800">
           {question}
         </h2>
         <div className="flex-shrink-0">
@@ -23,7 +23,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => {
             }`}
           >
             {isOpen ? (
-              <FaChevronDown className="text-sm sm:text-base md:text-lg text-primary" />
+              <FaChevronDown className="text-sm sm:text-base md:text-lg text-blue-600" />
             ) : (
               <FaChevronRight className="text-sm sm:text-base md:text-lg text-gray-500" />
             )}
@@ -36,7 +36,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => {
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="bg-white text-gray-700 px-4 sm:px-6 py-4 sm:py-5 rounded-b-xl shadow-lg border-l-4 border-primary mx-1">
+        <div className="bg-white text-gray-700 px-4 sm:px-6 py-4 sm:py-5 rounded-b-xl shadow-lg border-l-4 border-blue-600 mx-1">
           <div
             className={`transition-all duration-300 ${
               isOpen ? "translate-y-0" : "translate-y-2"
@@ -55,34 +55,34 @@ const FAQSection = () => {
 
   const faqs = [
     {
-      question: "How can I book an appointment?",
+      question: "Comment puis-je passer une commande ?",
       answer:
-        "You can book an appointment easily through our website by visiting the appointment page. Select the department, choose your preferred doctor, pick an available time slot, and your appointment will be confirmed instantly.",
+        "Vous pouvez commander directement sur notre site web ou nous envoyer un message via WhatsApp. Il vous suffit de choisir votre produit, de remplir vos informations de livraison, et nous vous contacterons pour confirmer.",
     },
     {
-      question: "Can I create an account to access my medical records?",
+      question: "Quels sont les délais et frais de livraison ?",
       answer:
-        "Yes, ShifaHMS allows you to create a personal account where you can track your appointments, view test results, access prescriptions, and review your bills.",
+        "La livraison est GRATUITE à Agadir et ses environs. Pour les autres villes du Maroc, les frais varient selon le poids et la destination. Le délai moyen est de 24 à 48 heures.",
     },
     {
-      question: "Does the system support emergency services?",
+      question: "Puis-je payer à la livraison ?",
       answer:
-        "Yes, our platform provides 24/7 access to emergency contact information. You can also check real-time emergency room status and priority levels.",
+        "Oui, nous acceptons le paiement en espèces à la livraison (Cash on Delivery) partout au Maroc. Vous ne payez que lorsque vous recevez et vérifiez votre produit.",
     },
     {
-      question: "Can I access my lab test results online?",
+      question: "Les produits sont-ils couverts par une garantie ?",
       answer:
-        "Absolutely. Once you log into your account, you can view and download all your lab reports as soon as they are uploaded by the laboratory team.",
+        "Absolument. Tous nos appareils (TV, Réfrigérateurs, Machines à laver, etc.) bénéficient d'une garantie constructeur officielle de 12 à 24 mois selon la marque.",
     },
     {
-      question: "Is my medical information secure?",
+      question: "Les produits sont-ils originaux ?",
       answer:
-        "Yes, we use advanced encryption and security protocols to ensure your data stays private. ShifaHMS follows international health information security standards.",
+        "Oui, Galaxy Digital s'engage à ne vendre que des produits 100% originaux et neufs dans leur emballage d'origine. Nous travaillons directement avec les plus grandes marques.",
     },
     {
-      question: "How can I contact the hospital?",
+      question: "Que faire en cas de problème avec mon appareil ?",
       answer:
-        "You can easily reach us through the Contact Us page, where you will find our phone number, email address, and location map. You can also send a direct support message.",
+        "Notre service après-vente est basé à Agadir. En cas de souci, contactez notre support technique via WhatsApp ou par téléphone, et nous organiserons l'intervention nécessaire.",
     },
   ];
 
@@ -93,25 +93,25 @@ const FAQSection = () => {
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col items-center justify-center ">
       <div className="w-full max-w-7xl mx-auto">
-        {/* Header Section */}
+        {/* En-tête de la section */}
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <div className="flex justify-center items-center gap-2 sm:gap-3 mb-4 sm:mb-6 tracking-tighter">
             <div className="hidden sm:block">
-              <FaQuestionCircle className="text-2xl sm:text-3xl md:text-4xl text-black" />
+              <FaQuestionCircle className="text-2xl sm:text-3xl md:text-4xl text-blue-600" />
             </div>
-            <h1 className="text-xl md:text-3xl font-[500] text-[#404040] pb-2">
-              Frequently Asked Questions
+            <h1 className="text-xl md:text-3xl font-bold text-gray-800 pb-2">
+              Questions Fréquemment Posées
             </h1>
           </div>
-          <p className="text-[#606060] opacity-75 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-lg md:max-w-2xl mx-auto leading-relaxed px-2 sm:px-0">
-            Everything you need to know about Shifa and how we&apos;re making
-            remote work accessible for everyone.
+          <p className="text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-lg md:max-w-2xl mx-auto leading-relaxed px-2 sm:px-0">
+            Tout ce que vous devez savoir sur Galaxy Digital et comment nous 
+            facilitons l'achat de vos équipements électroménagers au Maroc.
           </p>
         </div>
 
-        {/* FAQ Items Container */}
+        {/* Conteneur des éléments FAQ */}
         <div className="flex flex-col lg:flex-row lg:gap-12 xl:gap-16 items-start justify-center">
-          {/* FAQ Items */}
+          {/* Liste des questions */}
           <div className="w-full lg:w-2/3 xl:w-3/5 space-y-4 sm:space-y-6">
             {faqs.map((faq, index) => (
               <FAQItem
@@ -124,62 +124,68 @@ const FAQSection = () => {
             ))}
           </div>
 
-          {/* Side Panel - Hidden on mobile, visible on large screens */}
+          {/* Panneau latéral - Desktop */}
           <div className="hidden lg:block lg:w-1/3 xl:w-2/5 mt-8 lg:mt-0">
-            <div className="sticky top-8 bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+            <div className="sticky top-24 bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaQuestionCircle className="text-2xl text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  Need More Help?
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  Besoin d'aide ?
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Can&apos;t find what you&apos;re looking for? We&apos;re here
-                  to help!
+                  Vous ne trouvez pas la réponse à votre question ? Notre équipe est là pour vous aider !
                 </p>
               </div>
 
               <div className="space-y-4">
-                <button className="w-full bg-primary  text-white py-3 px-4 cursor-pointer rounded-lg font-medium transition-colors duration-200">
-                  Contact Support
-                </button>
-                <button className="w-full border-2 border-primary text-primary cursor-pointer py-3 px-4 rounded-lg font-medium transition-all duration-200">
-                  Browse Shifa
-                </button>
+                <a 
+                  href="https://wa.me/212608936659" 
+                  target="_blank"
+                  className="w-full bg-blue-600 text-center block text-white py-3 px-4 cursor-pointer rounded-lg font-bold hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Contacter le support
+                </a>
+                <Link 
+                  to="/boutique"
+                  className="w-full border-2 border-blue-600 text-blue-600 text-center block py-3 px-4 rounded-lg font-bold hover:bg-blue-50 transition-all duration-200"
+                >
+                  Voir les produits
+                </Link>
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <div className="flex items-center gap-3 text-sm text-gray-600">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span>Average response time: 2 hours</span>
+                  <span>Réponse moyenne : moins de 2 heures</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile CTA Section */}
+        {/* CTA Mobile */}
         <div className="lg:hidden mt-8 sm:mt-12 text-center">
           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 max-w-md mx-auto">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Need More Help?
+            <h3 className="text-lg font-bold text-gray-800 mb-2">
+              Besoin d'aide supplémentaire ?
             </h3>
             <p className="text-gray-600 text-sm mb-4">
-              Can&apos;t find what you&apos;re looking for?
+              Contactez-nous directement sur WhatsApp pour une réponse rapide.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link
-                to={"/contact"}
-                className="flex-1 bg-primary hover:bg-[#5a4de6] text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 text-sm"
+              <a
+                href="https://wa.me/212608936659"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-bold transition-colors duration-200 text-sm"
               >
-                Contact Support
-              </Link>
+                WhatsApp
+              </a>
               <Link
-                to={"/FindJob"}
-                className="flex-1 border-2 border-primary text-primary hover:bg-primary/80 hover:text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 text-sm"
+                to="/contact"
+                className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 py-3 px-4 rounded-lg font-bold transition-all duration-200 text-sm"
               >
-                Browse Jobs
+                Contact direct
               </Link>
             </div>
           </div>

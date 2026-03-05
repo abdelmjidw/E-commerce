@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, User as UserIcon, Loader2, X } from "lucide-react";
 import API from "../api/api"; // Import the axios instance
+import toast from "react-hot-toast";
 
 function AuthModal() {
   const { showLogin, closeLogin, login: setAuthStatus } = useAuth();
@@ -32,12 +33,11 @@ function AuthModal() {
     setLoading(true);
     setError("");
 
-    // Client-side Validation for Registration
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
-      setLoading(false);
-      return;
-    }
+if (!isLogin && formData.password !== formData.confirmPassword) {
+  toast.error("Passwords do not match!");
+  setLoading(false);
+  return;
+}
 
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
 
@@ -51,7 +51,7 @@ function AuthModal() {
       if (isLogin) {
         // Success Login logic
         setAuthStatus(data.user, data.token);
-        
+          toast.success("Login successful!");
         // Role-based Redirection
         if (data.user.role === "ADMIN") {
           navigate("/admin/dashboard");
@@ -61,13 +61,13 @@ function AuthModal() {
         closeLogin();
       } else {
         // Success Registration logic
-        alert("Account created successfully! Please sign in.");
+        toast.success("Account created successfully! Please sign in.");
         setIsLogin(true); 
       }
     } catch (err) {
       // Axios handles errors differently: server messages are in err.response.data
       const errorMessage = err.response?.data?.message || "Something went wrong. Please try again.";
-      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

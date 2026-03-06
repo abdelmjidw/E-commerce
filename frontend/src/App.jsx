@@ -12,7 +12,7 @@ function App() {
 
   return (
     <>
-       <Toaster position="top-right" />
+       <Toaster position="top-left" />
     <Header/>
     <AuthModal/>
     <Routes>

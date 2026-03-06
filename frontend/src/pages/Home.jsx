@@ -3,9 +3,12 @@ import { motion } from "framer-motion";
 import FAQSection from "../components/FAQSection";
 import API from "../api/api"; // Assure-toi que ce chemin est correct
 import { ShoppingCart, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
+import { Heart, Eye, Star } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
-import toast, { Toaster } from "react-hot-toast";
+import { useCart } from "../context/CartContext";
+
+import toast from "react-hot-toast";
 // Styles Swiper
 import "swiper/css";
 import "swiper/css/navigation";
@@ -60,53 +63,53 @@ const HERO_SLIDES = [
   },
 ];
 
-const PRODUCTS = [
-  {
-    id: 1,
-    name: 'Samsung 55" Crystal UHD 4K Smart TV',
-    price: 4299,
-    originalPrice: 7499,
-    discount: 42,
-    imageUrl:
-      "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    name: "LG Vivace 9KG Front Load Washing Machine",
-    price: 3499,
-    originalPrice: 4999,
-    discount: 30,
-    imageUrl:
-      "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    name: "Bosch Serie 4 NoFrost Refrigerator 400L",
-    price: 6999,
-    originalPrice: 8999,
-    discount: 22,
-    imageUrl:
-      "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 4,
-    name: "Whirlpool Split Air Conditioner 12000 BTU",
-    price: 3199,
-    originalPrice: 4099,
-    discount: 21,
-    imageUrl:
-      "https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 5,
-    name: "Sony PlayStation 5 Console Digital Edition",
-    price: 6799,
-    originalPrice: 8599,
-    discount: 20,
-    imageUrl:
-      "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
-  },
-];
+// const PRODUCTS = [
+//   {
+//     id: 1,
+//     name: 'Samsung 55" Crystal UHD 4K Smart TV',
+//     price: 4299,
+//     originalPrice: 7499,
+//     discount: 42,
+//     imageUrl:
+//       "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=400&q=80",
+//   },
+//   {
+//     id: 2,
+//     name: "LG Vivace 9KG Front Load Washing Machine",
+//     price: 3499,
+//     originalPrice: 4999,
+//     discount: 30,
+//     imageUrl:
+//       "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=400&q=80",
+//   },
+//   {
+//     id: 3,
+//     name: "Bosch Serie 4 NoFrost Refrigerator 400L",
+//     price: 6999,
+//     originalPrice: 8999,
+//     discount: 22,
+//     imageUrl:
+//       "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=400&q=80",
+//   },
+//   {
+//     id: 4,
+//     name: "Whirlpool Split Air Conditioner 12000 BTU",
+//     price: 3199,
+//     originalPrice: 4099,
+//     discount: 21,
+//     imageUrl:
+//       "https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=80",
+//   },
+//   {
+//     id: 5,
+//     name: "Sony PlayStation 5 Console Digital Edition",
+//     price: 6799,
+//     originalPrice: 8599,
+//     discount: 20,
+//     imageUrl:
+//       "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
+//   },
+// ];
 
 const REVIEWS = [
   {
@@ -171,92 +174,146 @@ const ReviewCard = ({ review }) => (
   </div>
 );
 
-const ProductCard = ({ product }) => (
-  <motion.div
-    variants={itemPop}
-    whileHover={{ y: -10 }}
-    className="bg-white border border-gray-100 rounded-3xl relative group hover:shadow-xl transition-all duration-500 cursor-pointer"
-  >
-    {product.originalPrice && (
-      <div className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] font-black px-3 py-3 rounded-se-3xl rounded-bl-2xl z-10 text-center leading-tight">
-        {product.discount}% <br /> RÉDUC
-      </div>
-    )}
+const ProductCard = ({ product }) => {
+  const [liked, setLiked] = useState(false);
 
-    <div className="w-full rounded-3xl overflow-hidden pt-4">
-      <motion.img
-        src={product.imageUrl}
-        alt={product.name}
-        whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full h-48 object-contain"
-      />
-    </div>
+  const { addToCart } = useCart();
+  const discount =
+    product.originalPrice && product.originalPrice > product.price
+      ? Math.round(
+          ((product.originalPrice - product.price) / product.originalPrice) *
+            100,
+        )
+      : 0;
 
-    <div className="p-5">
-      <h3 className="font-bold text-gray-800 text-sm mb-4 leading-tight h-10 line-clamp-2">
-        {product.name}
-      </h3>
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-xl font-black text-gray-900">
-          {product.price} DH
-        </span>
-        {product.originalPrice > product.price && (
-          <span className="text-gray-400 text-sm line-through font-medium">
-            {product.originalPrice} DH
+  return (
+    <motion.div
+      variants={itemPop}
+      whileHover={{ y: -8 }}
+      className="bg-white rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300"
+    >
+      {/* Image */}
+      <div className="relative bg-gray-50 p-3 flex items-center justify-center">
+        {/* Discount */}
+        {discount > 0 && (
+          <span className="absolute top-3 left-3 z-30 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+            -{discount}%
           </span>
         )}
+
+        {/* Wishlist */}
+        <button
+          onClick={() => {
+            setLiked(!liked);
+            toast.success(
+              liked ? "Removed from wishlist" : "Added to wishlist ❤️",
+            );
+          }}
+          className="absolute top-3 right-3 z-30 bg-white p-2 rounded-full shadow hover:bg-red-500 hover:text-white transition"
+        >
+          <Heart
+            size={16}
+            className={liked ? "fill-red-500 text-red-500" : ""}
+          />
+        </button>
+
+        {/* Image */}
+        <motion.img
+          src={product.imageUrl}
+          alt={product.name}
+          whileHover={{ scale: 1.08 }}
+          transition={{ duration: 0.4 }}
+          className="h-44 object-contain"
+        />
+
+        {/* Quick view */}
+        <button
+          onClick={() => toast("Quick view coming soon 👀")}
+          className="absolute bottom-3 opacity-0 group-hover:opacity-100 transition bg-white px-3 py-1 text-xs rounded-lg shadow flex items-center gap-1"
+        >
+          <Eye size={14} />
+          Quick View
+        </button>
       </div>
-      <div className="pt-4 border-t border-gray-50 flex justify-between items-center">
-        {product.originalPrice - product.price > 0 && (
-          <p className="text-green-600 text-[10px] font-bold uppercase tracking-wider">
-            Économisez {product.originalPrice - product.price} DH
+
+      {/* Info */}
+      <div className="p-4 flex flex-col gap-3">
+        <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 min-h-[40px]">
+          {product.name}
+        </h3>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 text-yellow-400">
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} size={14} fill="currentColor" />
+          ))}
+          <span className="text-gray-500 text-xs ml-1">(4.8)</span>
+        </div>
+
+        {/* Price */}
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold text-gray-900">
+            {product.price} DH
+          </span>
+
+          {product.originalPrice > product.price && (
+            <span className="text-xs text-gray-400 line-through">
+              {product.originalPrice} DH
+            </span>
+          )}
+        </div>
+
+        {/* Save */}
+        {discount > 0 && (
+          <p className="text-green-600 text-xs font-semibold">
+            Save {product.originalPrice - product.price} DH
           </p>
         )}
+
+        {/* Add to cart */}
         <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => toast.success("Produit ajouté au panier")}
-          className="bg-blue-50 p-2 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-colors"
+          whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            addToCart(product);
+            toast.success("Produit ajouté au panier");
+          }}
+          className="mt-2 w-full bg-blue-600 text-white py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition"
         >
-          <ShoppingCart size={18} />
+          <ShoppingCart size={16} />
+          Ajouter au panier
         </motion.button>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 export default function GalaxyHome() {
   const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get("/api/categories");
-        setCategories(res.data);
+        const [catRes, prodRes] = await Promise.all([
+          API.get("/api/categories"),
+          API.get("/api/products?limit=10"),
+        ]);
+        console.log(prodRes.data);
+
+        setCategories(catRes.data);
+        setProducts(prodRes.data.data);
+
       } catch (err) {
-        console.error("Erreur API:", err);
+        console.error(err.message);
+
+        toast.error("Erreur lors du chargement");
       } finally {
         setLoading(false);
       }
     };
-    const fetchProducts = async () => {
-      try {
-        const res = await API.get("/api/products");
-        setProducts(res.data);
 
-        toast.success("Produits chargés avec succès");
-      } catch (err) {
-        console.error("Erreur API:", err);
-
-        toast.error("Erreur lors du chargement des produits");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategories();
-    fetchProducts();
+    fetchData();
   }, []);
 
   return (
@@ -429,7 +486,7 @@ export default function GalaxyHome() {
             viewport={{ once: true }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8"
           >
-            {products?.data?.map((p) => (
+            {products?.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </motion.div>

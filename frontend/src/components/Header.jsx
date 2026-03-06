@@ -12,10 +12,12 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
+import { useCart } from "../context/CartContext";
 const Header = () => {
   const { user, openLogin, logout, isAuthenticated } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
+  const { cart, removeFromCart, totalPrice } = useCart();
   const dropdownRef = useRef(null);
 
   
@@ -151,12 +153,89 @@ const Header = () => {
             <div className="w-[1.5px] h-8 bg-gray-200" />
 
             {/* Shopping Cart */}
-            <div className="relative cursor-pointer hover:scale-110 transition-transform">
+<div
+  onClick={() => setOpenCart(true)}
+  className="relative cursor-pointer hover:scale-110 transition-transform"
+>
               <ShoppingCart size={24} className="text-blue-600" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-                3
+                {cart.length}
               </span>
             </div>
+            {/* Cart Drawer */}
+{openCart && (
+  <div className="fixed inset-0 z-[200] flex">
+    
+    {/* Overlay */}
+    <div
+      className="flex-1 bg-black/40"
+      onClick={() => setOpenCart(false)}
+    />
+
+    {/* Cart Panel */}
+    <div className="w-[380px] bg-white h-full shadow-2xl p-6 flex flex-col animate-slide-in">
+      
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-lg font-bold">Shopping Cart</h2>
+        <button
+          onClick={() => setOpenCart(false)}
+          className="text-gray-500 hover:text-red-500"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Cart Items */}
+      <div className="flex-1 overflow-y-auto space-y-4">
+
+<div className="flex-1 overflow-y-auto space-y-4">
+
+{cart.length === 0 && (
+  <p className="text-center text-gray-500">Cart is empty</p>
+)}
+
+{cart.map((item) => (
+  <div key={item.id} className="flex gap-3 border-b pb-3">
+    <img
+      src={item.imageUrl}
+      className="w-14 h-14 object-cover rounded"
+    />
+
+    <div className="flex-1">
+      <p className="text-sm font-semibold">{item.name}</p>
+      <p className="text-xs text-gray-500">
+        {item.quantity} × {item.price} DH
+      </p>
+    </div>
+
+    <button
+      onClick={() => removeFromCart(item.id)}
+      className="text-red-500 text-xs"
+    >
+      remove
+    </button>
+  </div>
+))}
+
+</div>
+
+      </div>
+
+      {/* Footer */}
+      <div className="border-t pt-4">
+        <p className="flex justify-between font-semibold">
+          <span>Total</span>
+          <span>{totalPrice} DH</span>
+        </p>
+
+        <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl font-semibold">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+)}
           </div>
         </div>
       </div>

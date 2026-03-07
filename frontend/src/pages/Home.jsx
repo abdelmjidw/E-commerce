@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import FAQSection from "../components/FAQSection";
 import API from "../api/api"; // Assure-toi que ce chemin est correct
-import { ShoppingCart, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
+import { ShoppingCart, ChevronDown, ChevronRight, Loader2, UnfoldHorizontal } from "lucide-react";
 import { Heart, Eye, Star } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
-
+import {  useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 // Styles Swiper
 import "swiper/css";
@@ -291,7 +291,7 @@ export default function GalaxyHome() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate =useNavigate()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -475,7 +475,7 @@ export default function GalaxyHome() {
               </h2>
               <div className="h-1.5 w-16 bg-blue-600 rounded-full mt-2"></div>
             </div>
-            <button className="text-blue-600 font-bold text-sm flex items-center gap-1">
+            <button onClick={()=>navigate('/products')} className="text-blue-600 font-bold text-sm flex items-center gap-1 cursor-pointer">
               Voir toutes les offres <ChevronRight size={16} />
             </button>
           </motion.div>

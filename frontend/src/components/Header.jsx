@@ -168,12 +168,12 @@ const Header = () => {
     
     {/* Overlay */}
     <div
-      className="flex-1 bg-black/40"
+      className="flex-1 bg-black/40 "
       onClick={() => setOpenCart(false)}
     />
 
     {/* Cart Panel */}
-    <div className="w-[380px] bg-white h-full shadow-2xl p-6 flex flex-col animate-slide-in">
+    <div className="w-[380px] bg-white h-full shadow-2xl p-6 flex flex-col ">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-6">

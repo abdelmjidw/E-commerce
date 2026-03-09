@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import FAQSection from "../components/FAQSection";
 import API from "../api/api"; // Assure-toi que ce chemin est correct
-import { ShoppingCart, ChevronDown, ChevronRight, Loader2, UnfoldHorizontal } from "lucide-react";
+import {
+  ShoppingCart,
+  ChevronDown,
+  ChevronRight,
+  Loader2,
+  UnfoldHorizontal,
+} from "lucide-react";
 import { Heart, Eye, Star } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 // Styles Swiper
 import "swiper/css";
@@ -291,7 +297,7 @@ export default function GalaxyHome() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -303,7 +309,6 @@ export default function GalaxyHome() {
 
         setCategories(catRes.data);
         setProducts(prodRes.data.data);
-
       } catch (err) {
         console.error(err.message);
 
@@ -315,6 +320,11 @@ export default function GalaxyHome() {
 
     fetchData();
   }, []);
+
+  const categoryCounts = products.reduce((acc, product) => {
+    acc[product.categoryId] = (acc[product.categoryId] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-white">
@@ -332,6 +342,7 @@ export default function GalaxyHome() {
           {categories.map((cat) => (
             <button
               key={cat.id}
+              onClick={() => navigate(`/products?category=${cat.id}`)}
               className="px-5 py-2 rounded-full text-sm font-semibold bg-gray-50 text-gray-700 hover:bg-gray-100 flex items-center gap-2 flex-shrink-0 transition-all"
             >
               {cat.name} <ChevronDown size={14} />
@@ -416,9 +427,6 @@ export default function GalaxyHome() {
               </h2>
               <div className="h-1.5 w-16 bg-blue-600 rounded-full mt-2"></div>
             </div>
-            <button className="text-blue-600 font-bold text-sm flex items-center gap-1">
-              Voir tout <ChevronRight size={16} />
-            </button>
           </motion.div>
 
           {loading ? (
@@ -440,19 +448,22 @@ export default function GalaxyHome() {
                     key={cat.id}
                     variants={itemPop}
                     whileHover={{ y: -5 }}
+                    onClick={() => navigate(`/products?category=${cat.id}`)}
                     className="group cursor-pointer flex flex-col items-center"
                   >
                     <div
-                      className={`${details.color} w-24 h-24 rounded-full flex items-center justify-center mb-4 border-2 border-transparent group-hover:border-blue-500 transition-all shadow-sm`}
+                      className={`${details.color} w-24 h-24 rounded-full flex items-center justify-center mb-4`}
                     >
-                      <span className="text-4xl group-hover:scale-110 transition-transform">
-                        {details.icon}
-                      </span>
+                      <span className="text-4xl">{details.icon}</span>
                     </div>
-                    <h3 className="font-bold text-gray-800 text-sm group-hover:text-blue-600">
+
+                    <h3 className="font-bold text-gray-800 text-sm">
                       {cat.name}
                     </h3>
-                    <p className="text-gray-400 text-xs mt-1">Découvrir</p>
+
+                    <p className="text-gray-400 text-xs mt-1">
+                      {categoryCounts[cat.id] || 0} products
+                    </p>
                   </motion.div>
                 );
               })}
@@ -475,7 +486,10 @@ export default function GalaxyHome() {
               </h2>
               <div className="h-1.5 w-16 bg-blue-600 rounded-full mt-2"></div>
             </div>
-            <button onClick={()=>navigate('/products')} className="text-blue-600 font-bold text-sm flex items-center gap-1 cursor-pointer">
+            <button
+              onClick={() => navigate("/products")}
+              className="text-blue-600 font-bold text-sm flex items-center gap-1 cursor-pointer"
+            >
               Voir toutes les offres <ChevronRight size={16} />
             </button>
           </motion.div>

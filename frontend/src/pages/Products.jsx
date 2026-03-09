@@ -4,12 +4,14 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Heart, Eye, Star, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useSearchParams } from "react-router-dom";
 
 const itemPop = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
 
+// Carte produit
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
   const { addToCart } = useCart();
@@ -17,8 +19,7 @@ const ProductCard = ({ product }) => {
   const discount =
     product.originalPrice && product.originalPrice > product.price
       ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) *
-            100
+          ((product.originalPrice - product.price) / product.originalPrice) * 100
         )
       : 0;
 
@@ -39,15 +40,12 @@ const ProductCard = ({ product }) => {
           onClick={() => {
             setLiked(!liked);
             toast.success(
-              liked ? "Removed from wishlist" : "Added to wishlist ❤️"
+              liked ? "Supprimé de la liste de souhaits" : "Ajouté à la liste de souhaits ❤️"
             );
           }}
           className="absolute top-3 right-3 z-30 bg-white p-2 rounded-full shadow hover:bg-red-500 hover:text-white transition"
         >
-          <Heart
-            size={16}
-            className={liked ? "fill-red-500 text-red-500" : ""}
-          />
+          <Heart size={16} className={liked ? "fill-red-500 text-red-500" : ""} />
         </button>
 
         <motion.img
@@ -59,11 +57,11 @@ const ProductCard = ({ product }) => {
         />
 
         <button
-          onClick={() => toast("Quick view coming soon 👀")}
+          onClick={() => toast("Aperçu rapide bientôt disponible 👀")}
           className="absolute bottom-3 opacity-0 group-hover:opacity-100 transition bg-white px-3 py-1 text-xs rounded-lg shadow flex items-center gap-1"
         >
           <Eye size={14} />
-          Quick View
+          Aperçu rapide
         </button>
       </div>
 
@@ -80,10 +78,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">
-            {product.price} DH
-          </span>
-
+          <span className="text-lg font-bold text-gray-900">{product.price} DH</span>
           {product.originalPrice > product.price && (
             <span className="text-xs text-gray-400 line-through">
               {product.originalPrice} DH
@@ -93,7 +88,7 @@ const ProductCard = ({ product }) => {
 
         {discount > 0 && (
           <p className="text-green-600 text-xs font-semibold">
-            Save {product.originalPrice - product.price} DH
+            Économisez {product.originalPrice - product.price} DH
           </p>
         )}
 
@@ -113,20 +108,25 @@ const ProductCard = ({ product }) => {
   );
 };
 
-function Products() {
+// Page principale des produits
+const ProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+  const categoryFromUrl = searchParams.get("category") || "";
+
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [rating, setRating] = useState(0);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const productsPerPage = 8;
 
+  // Récupération des données depuis l'API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -134,7 +134,6 @@ function Products() {
           API.get("/api/categories"),
           API.get("/api/products?limit=100"),
         ]);
-
         setCategories(catRes.data);
         setProducts(prodRes.data.data);
       } catch (err) {
@@ -143,40 +142,37 @@ function Products() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  // Filtrage des produits selon recherche et filtres
   const filteredProducts = products.filter((product) => {
     const matchCategory =
       !selectedCategory || product.categoryId === Number(selectedCategory);
-
     const matchMin = !minPrice || product.price >= Number(minPrice);
     const matchMax = !maxPrice || product.price <= Number(maxPrice);
-
     const matchRating = !rating || (product.rating || 4) >= rating;
+    const matchSearch =
+      !searchQuery ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchCategory && matchMin && matchMax && matchRating;
+    return matchCategory && matchMin && matchMax && matchRating && matchSearch;
   });
 
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
-
   const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
     <div className="container mx-auto px-6 py-10 flex gap-8">
-      
-      {/* Filters */}
+      {/* Sidebar pour filtres */}
       <div className="w-64 bg-white p-5 rounded-xl shadow h-fit">
-        <h2 className="font-bold text-lg mb-4">Filters</h2>
+        <h2 className="font-bold text-lg mb-4">Filtres</h2>
 
-        {/* Category */}
+        {/* Catégorie */}
         <div className="mb-6">
-          <h3 className="font-semibold mb-2">Category</h3>
-
+          <h3 className="font-semibold mb-2">Catégorie</h3>
           <select
             className="w-full border p-2 rounded"
             value={selectedCategory}
@@ -185,8 +181,7 @@ function Products() {
               setCurrentPage(1);
             }}
           >
-            <option value="">All</option>
-
+            <option value="">Tous</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -195,10 +190,9 @@ function Products() {
           </select>
         </div>
 
-        {/* Price */}
+        {/* Prix */}
         <div className="mb-6">
-          <h3 className="font-semibold mb-2">Price</h3>
-
+          <h3 className="font-semibold mb-2">Prix</h3>
           <input
             type="number"
             placeholder="Min"
@@ -206,7 +200,6 @@ function Products() {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
           />
-
           <input
             type="number"
             placeholder="Max"
@@ -216,57 +209,68 @@ function Products() {
           />
         </div>
 
-        {/* Rating */}
+        {/* Note */}
         <div>
-          <h3 className="font-semibold mb-2">Rating</h3>
-
+          <h3 className="font-semibold mb-2">Note</h3>
           <select
             className="w-full border p-2 rounded"
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
           >
-            <option value="0">All</option>
-            <option value="5">5 Stars</option>
-            <option value="4">4 Stars & up</option>
-            <option value="3">3 Stars & up</option>
-            <option value="2">2 Stars & up</option>
+            <option value="0">Tous</option>
+            <option value="5">5 Étoiles</option>
+            <option value="4">4 Étoiles et +</option>
+            <option value="3">3 Étoiles et +</option>
+            <option value="2">2 Étoiles et +</option>
           </select>
         </div>
       </div>
 
-      {/* Products */}
+      {/* Affichage des produits */}
       <div className="flex-1">
         {loading ? (
-          <p>Loading...</p>
+          <p>Chargement...</p>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {currentProducts.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            {searchQuery && (
+              <h2 className="text-xl font-bold mb-6">
+                Résultats de recherche pour: "{searchQuery}" ({filteredProducts.length})
+              </h2>
+            )}
 
-            {/* Pagination */}
-            <div className="flex justify-center mt-10 gap-2">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded ${
-                    currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
+            {filteredProducts.length === 0 ? (
+              <p className="text-gray-500">Aucun produit trouvé</p>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {currentProducts.map((p) => (
+                    <ProductCard key={p.id} product={p} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-center mt-10 gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-4 py-2 rounded ${
+                        currentPage === i + 1
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
     </div>
   );
-}
+};
 
-export default Products;
+export default ProductsPage;

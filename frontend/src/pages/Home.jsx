@@ -10,7 +10,7 @@ import {
   UnfoldHorizontal,
 } from "lucide-react";
 import { Heart, Eye, Star } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
@@ -547,22 +547,7 @@ export default function GalaxyHome() {
         </section>
       </main>
 
-      {/* Bouton WhatsApp */}
-      <motion.a
-        href="https://wa.me/212608936659"
-        target="_blank"
-        rel="noreferrer"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
-        transition={{ delay: 1, type: "spring" }}
-        className="fixed bottom-8 right-8 bg-green-500 text-white p-4 rounded-full shadow-2xl z-50 flex items-center group"
-      >
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap font-bold text-sm">
-          <span className="px-2">Commander via WhatsApp</span>
-        </span>
-        <FaWhatsapp size={24} />
-      </motion.a>
+
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

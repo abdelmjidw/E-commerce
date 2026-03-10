@@ -251,7 +251,10 @@ const Header = () => {
                       <span>{totalPrice} DH</span>
                     </p>
 
-                    <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl font-semibold">
+                    <button onClick={()=>{
+                      setOpenCart(false);
+                      navigate("/checkout");
+                    }} className="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl font-semibold">
                       Checkout
                     </button>
                   </div>

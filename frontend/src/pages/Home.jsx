@@ -13,6 +13,7 @@ import { Heart, Eye, Star } from "lucide-react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 // Styles Swiper
@@ -107,15 +108,16 @@ const HERO_SLIDES = [
 //       "https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=80",
 //   },
 //   {
-//     id: 5,
-//     name: "Sony PlayStation 5 Console Digital Edition",
-//     price: 6799,
-//     originalPrice: 8599,
-//     discount: 20,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
+  //     id: 5,
+  //     name: "Sony PlayStation 5 Console Digital Edition",
+  //     price: 6799,
+  //     originalPrice: 8599,
+  //     discount: 20,
+  //     imageUrl:
+  //       "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
 //   },
 // ];
+
 
 const REVIEWS = [
   {
@@ -180,118 +182,146 @@ const ReviewCard = ({ review }) => (
   </div>
 );
 
+
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
-
+  const [isAdding, setIsAdding] = useState(false); // لحالة التحميل عند الضغط
+  
   const { addToCart } = useCart();
+  const { isAuthenticated, openLogin } = useAuth();
+
+  // حساب نسبة الخصم
   const discount =
     product.originalPrice && product.originalPrice > product.price
-      ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) *
-            100,
-        )
+      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
       : 0;
+
+  // دالة الإضافة إلى السلة
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+
+    // 1. التحقق من تسجيل الدخول
+    if (!isAuthenticated) {
+      toast.error("Veuillez vous connecter pour ajouter au panier");
+      openLogin(); // فتح نافذة تسجيل الدخول تلقائياً
+      return;
+    }
+
+    try {
+      setIsAdding(true);
+      // 2. استدعاء الدالة من Context (والتي بدورها تراسل الـ API)
+      await addToCart(product); 
+      
+      toast.success(`${product.name} ajouté au panier !`, {
+        icon: '🛒',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout au panier");
+      console.error(error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <motion.div
       variants={itemPop}
       whileHover={{ y: -8 }}
-      className="bg-white rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300"
+      className="bg-white rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
     >
-      {/* Image */}
-      <div className="relative bg-gray-50 p-3 flex items-center justify-center">
-        {/* Discount */}
+      {/* Image Container */}
+      <div className="relative bg-gray-50 p-3 flex items-center justify-center aspect-square overflow-hidden">
+        {/* Discount Badge */}
         {discount > 0 && (
-          <span className="absolute top-3 left-3 z-30 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+          <span className="absolute top-3 left-3 z-30 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
             -{discount}%
           </span>
         )}
 
-        {/* Wishlist */}
+        {/* Wishlist Button */}
         <button
           onClick={() => {
             setLiked(!liked);
-            toast.success(
-              liked ? "Removed from wishlist" : "Added to wishlist ❤️",
-            );
+            toast(liked ? "Retiré des favoris" : "Ajouté aux favoris ❤️");
           }}
-          className="absolute top-3 right-3 z-30 bg-white p-2 rounded-full shadow hover:bg-red-500 hover:text-white transition"
+          className="absolute top-3 right-3 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-colors duration-300"
         >
           <Heart
             size={16}
-            className={liked ? "fill-red-500 text-red-500" : ""}
+            className={liked ? "fill-red-500 text-red-500" : "text-gray-400"}
           />
         </button>
 
-        {/* Image */}
+        {/* Product Image */}
         <motion.img
           src={product.imageUrl}
           alt={product.name}
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.4 }}
-          className="h-44 object-contain"
+          className="h-44 w-full object-contain mix-blend-multiply"
         />
-
-        {/* Quick view */}
-        <button
-          onClick={() => toast("Quick view coming soon 👀")}
-          className="absolute bottom-3 opacity-0 group-hover:opacity-100 transition bg-white px-3 py-1 text-xs rounded-lg shadow flex items-center gap-1"
-        >
-          <Eye size={14} />
-          Quick View
-        </button>
       </div>
 
-      {/* Info */}
-      <div className="p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 min-h-[40px]">
+      {/* Info Container */}
+      <div className="p-4 flex flex-col flex-1 gap-2">
+        <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 min-h-[40px] hover:text-blue-600 transition-colors">
           {product.name}
         </h3>
 
         {/* Rating */}
         <div className="flex items-center gap-1 text-yellow-400">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} size={14} fill="currentColor" />
+            <Star key={i} size={12} fill={i < 4 ? "currentColor" : "none"} className={i >= 4 ? "text-gray-300" : ""} />
           ))}
-          <span className="text-gray-500 text-xs ml-1">(4.8)</span>
+          <span className="text-gray-400 text-[10px] ml-1 font-medium">(4.8)</span>
         </div>
 
-        {/* Price */}
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">
-            {product.price} DH
-          </span>
-
-          {product.originalPrice > product.price && (
-            <span className="text-xs text-gray-400 line-through">
-              {product.originalPrice} DH
+        {/* Price Section */}
+        <div className="mt-auto">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-blue-600">
+              {product.price.toLocaleString()} DH
             </span>
+            {product.originalPrice > product.price && (
+              <span className="text-xs text-gray-400 line-through">
+                {product.originalPrice.toLocaleString()} DH
+              </span>
+            )}
+          </div>
+
+          {/* Savings Info */}
+          {discount > 0 && (
+            <p className="text-green-600 text-[10px] font-bold uppercase tracking-wider">
+              Économisez {(product.originalPrice - product.price).toLocaleString()} DH
+            </p>
           )}
         </div>
 
-        {/* Save */}
-        {discount > 0 && (
-          <p className="text-green-600 text-xs font-semibold">
-            Save {product.originalPrice - product.price} DH
-          </p>
-        )}
-
-        {/* Add to cart */}
+        {/* Add to Cart Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            addToCart(product);
-            toast.success("Produit ajouté au panier");
-          }}
-          className="mt-2 w-full bg-blue-600 text-white py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition"
+          disabled={isAdding}
+          onClick={handleAddToCart}
+          className={`mt-3 w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
+            isAdding 
+              ? "bg-gray-400 cursor-not-allowed" 
+              : "bg-blue-600 text-white hover:bg-blue-700 active:shadow-inner"
+          }`}
         >
-          <ShoppingCart size={16} />
-          Ajouter au panier
+          <ShoppingCart size={18} className={isAdding ? "animate-bounce" : ""} />
+          {isAdding ? "Chargement..." : "Ajouter au panier"}
         </motion.button>
       </div>
     </motion.div>
   );
 };
+
+
 
 export default function GalaxyHome() {
   const [categories, setCategories] = useState([]);

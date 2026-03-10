@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import  Header  from './components/Header'
+import Checkout from './pages/checkout.jsx'
 import { Toaster } from "react-hot-toast";
 import Footer from './components/Footer'
 import './App.css'
@@ -19,6 +20,7 @@ function App() {
     <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/products' element={<Products /> } />
+        <Route path='/checkout' element={<Checkout /> } />
 
     </Routes>
           {/* Bouton WhatsApp */}

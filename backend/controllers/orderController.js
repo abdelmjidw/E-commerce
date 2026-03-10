@@ -1,7 +1,7 @@
 import prisma from "../config/db.js";
 
 export const createOrder = async (req, res) => {
-  const { items, phone, address, totalPrice, couponId } = req.body; 
+  const { items, phone, address,status, totalPrice, couponId } = req.body; 
   // items: [{productId, quantity, price}]
 
   try {

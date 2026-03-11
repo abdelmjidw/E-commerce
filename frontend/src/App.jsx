@@ -1,29 +1,29 @@
-import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Products from './pages/Products'
-import  Header  from './components/Header'
-import Checkout from './pages/checkout.jsx'
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import Header from "./components/Header";
+import Checkout from "./pages/checkout.jsx";
+import ProdutsDetails from "./pages/ProdutsDetails.jsx";
 import { Toaster } from "react-hot-toast";
-import Footer from './components/Footer'
-import './App.css'
+import Footer from "./components/Footer";
+import "./App.css";
 import AuthModal from "../src/components/AuthModal.jsx";
 import { motion } from "framer-motion";
+
 import { FaWhatsapp } from "react-icons/fa";
 function App() {
-
-
   return (
     <>
-       <Toaster position="top-left" />
-    <Header/>
-    <AuthModal/>
-    <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/products' element={<Products /> } />
-        <Route path='/checkout' element={<Checkout /> } />
-
-    </Routes>
-          {/* Bouton WhatsApp */}
+      <Toaster position="top-left" />
+      <Header />
+      <AuthModal />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/product/:id" element={<ProdutsDetails />} />
+        <Route path="/checkout" element={<Checkout />} />
+      </Routes>
+      {/* Bouton WhatsApp */}
       <motion.a
         href="https://wa.me/212608936659"
         target="_blank"
@@ -38,9 +38,9 @@ function App() {
         </span>
         <FaWhatsapp size={24} />
       </motion.a>
-    <Footer/>
+      <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

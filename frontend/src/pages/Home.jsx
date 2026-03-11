@@ -10,11 +10,10 @@ import {
   UnfoldHorizontal,
 } from "lucide-react";
 import { Heart, Eye, Star } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 // Styles Swiper
 import "swiper/css";
@@ -22,6 +21,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+
 
 // --- Variantes d'Animation ---
 const fadeInDown = {
@@ -186,7 +186,7 @@ const ReviewCard = ({ review }) => (
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
   const [isAdding, setIsAdding] = useState(false); // لحالة التحميل عند الضغط
-  
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated, openLogin } = useAuth();
 
@@ -199,7 +199,7 @@ const ProductCard = ({ product }) => {
   // دالة الإضافة إلى السلة
   const handleAddToCart = async (e) => {
     e.preventDefault();
-
+    e.stopPropagation();
     // 1. التحقق من تسجيل الدخول
     if (!isAuthenticated) {
       toast.error("Veuillez vous connecter pour ajouter au panier");
@@ -232,7 +232,8 @@ const ProductCard = ({ product }) => {
     <motion.div
       variants={itemPop}
       whileHover={{ y: -8 }}
-      className="bg-white rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
+      onClick={()=>navigate(`/product/${product.id}`)}
+      className="bg-white cursor-pointer rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
     >
       {/* Image Container */}
       <div className="relative bg-gray-50 p-3 flex items-center justify-center aspect-square overflow-hidden">
@@ -244,18 +245,31 @@ const ProductCard = ({ product }) => {
         )}
 
         {/* Wishlist Button */}
-        <button
-          onClick={() => {
-            setLiked(!liked);
-            toast(liked ? "Retiré des favoris" : "Ajouté aux favoris ❤️");
-          }}
-          className="absolute top-3 right-3 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-colors duration-300"
-        >
-          <Heart
-            size={16}
-            className={liked ? "fill-red-500 text-red-500" : "text-gray-400"}
-          />
-        </button>
+<button
+  type="button"
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLiked(!liked);
+    toast(liked ? "Retiré des favoris" : "Ajouté aux favoris ❤️");
+  }}
+  className="absolute top-3 right-3 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-400 group/heart transition-all duration-300"
+>
+  <motion.div
+    whileTap={{ scale: 1.5 }}
+    whileHover={{ scale: 1.1 }}
+    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+  >
+    <Heart
+      size={16}
+      className={`transition-colors duration-300 ${
+        liked 
+          ? "fill-red-500 text-red-500 hover:text-red-600 hover:fill-red-600" 
+          : "text-gray-400 group-hover/heart:text-white"
+      }`}
+    />
+  </motion.div>
+</button>
 
         {/* Product Image */}
         <motion.img
@@ -307,6 +321,7 @@ const ProductCard = ({ product }) => {
           whileTap={{ scale: 0.95 }}
           disabled={isAdding}
           onClick={handleAddToCart}
+          
           className={`mt-3 w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
             isAdding 
               ? "bg-gray-400 cursor-not-allowed" 

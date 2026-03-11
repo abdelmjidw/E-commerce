@@ -52,11 +52,11 @@ const Header = () => {
           
           {/* Logo Section */}
           <div className="flex items-center gap-2 cursor-pointer">
-            <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+            <div className="bg-primary p-1.5 rounded-lg text-white">
               <List size={20} />
             </div>
             <Link to="/">
-              <h1 className="text-sm sm:text-xl md:text-2xl font-black text-blue-600 tracking-tighter">
+              <h1 className="text-sm sm:text-xl md:text-2xl font-black text-primary tracking-tighter">
                 GALAXY DIGITAL
               </h1>
             </Link>
@@ -84,16 +84,17 @@ const Header = () => {
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-5">
             {!isAuthenticated ? (
-              <button onClick={openLogin} className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-gray-700 hover:text-blue-600 transition group">
-                <User size={20} className="text-gray-700 group-hover:text-blue-600" />
-                <span className="hidden sm:inline">Sign In</span>
+              <button onClick={openLogin} className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-gray-700 hover:text-primary transition group">
+                <User size={20} className="text-gray-700 group-hover:text-primary" />
+                <span className="hidden sm:inline">Sign In/Sign Up</span>
               </button>
             ) : (
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex cursor-pointer items-center gap-2 py-1 px-2 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
                     {user?.name?.charAt(0).toUpperCase()}
                   </div>
+                  <h3 className="flex flex-col justify-baseline"><span className="text-sm text-start font-semibold text-pri">Hello</span> {user?.name.split(' ')[0]}</h3>
                   <ChevronDown size={14} className={`text-gray-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
 
@@ -101,7 +102,7 @@ const Header = () => {
                   <div className="absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[100] animate-in fade-in zoom-in-95 duration-200">
                     <div className="px-4 py-3 border-b border-gray-50 mb-1">
                       <p className="text-sm font-black text-gray-900 truncate">{user?.name}</p>
-                      <p className="text-[10px] text-blue-600 font-bold uppercase">{user?.role}</p>
+                      <p className="text-[10px] text-primary font-bold uppercase">{user?.role}</p>
                     </div>
                     <div className="p-1">
                       <Link to="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition"><Settings size={16} /> Profile</Link>
@@ -117,7 +118,7 @@ const Header = () => {
 
             {/* Shopping Cart Trigger */}
             <div onClick={() => setOpenCart(true)} className="relative cursor-pointer hover:scale-110 transition-transform">
-              <ShoppingCart size={24} className="text-blue-600" />
+              <ShoppingCart size={24} className="text-primary" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
                 {cart.length}
               </span>
@@ -150,7 +151,7 @@ const Header = () => {
                           />
                           <div className="flex-1">
                             <h4 className="text-sm font-bold text-gray-800 line-clamp-1">{item.product.name}</h4>
-                            <p className="text-blue-600 font-bold text-sm mb-3">{item.product.price} DH</p>
+                            <p className="text-primary font-bold text-sm mb-3">{item.product.price} DH</p>
                             
                             {/* التحكم في الكمية المطور */}
                             <div className="flex items-center justify-between">
@@ -187,14 +188,14 @@ const Header = () => {
                     <div className="border-t border-gray-100 pt-6 mt-6">
                       <div className="flex justify-between items-center mb-6">
                         <span className="text-gray-500 font-bold">TOTAL</span>
-                        <span className="text-2xl font-black text-blue-600">{totalPrice} DH</span>
+                        <span className="text-2xl font-black text-primary">{totalPrice} DH</span>
                       </div>
                       <button
                         onClick={() => {
                           setOpenCart(false);
                           navigate("/checkout");
                         }}
-                        className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all transform active:scale-95"
+                        className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all transform active:scale-95"
                       >
                         Passer à la caisse
                       </button>

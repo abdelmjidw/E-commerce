@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import FAQSection from "../components/FAQSection";
-import API from "../api/api"; // Assure-toi que ce chemin est correct
+import API from "../api/api"; 
 import {
   ShoppingCart,
   ChevronDown,
@@ -15,13 +15,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+
 // Styles Swiper
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
-
 
 // --- Variantes d'Animation ---
 const fadeInDown = {
@@ -48,7 +48,7 @@ const itemPop = {
   },
 };
 
-// --- Données Traduites ---
+// --- Données Statiques (Hero) ---
 const HERO_SLIDES = [
   {
     id: 1,
@@ -70,79 +70,6 @@ const HERO_SLIDES = [
   },
 ];
 
-// const PRODUCTS = [
-//   {
-//     id: 1,
-//     name: 'Samsung 55" Crystal UHD 4K Smart TV',
-//     price: 4299,
-//     originalPrice: 7499,
-//     discount: 42,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=400&q=80",
-//   },
-//   {
-//     id: 2,
-//     name: "LG Vivace 9KG Front Load Washing Machine",
-//     price: 3499,
-//     originalPrice: 4999,
-//     discount: 30,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=400&q=80",
-//   },
-//   {
-//     id: 3,
-//     name: "Bosch Serie 4 NoFrost Refrigerator 400L",
-//     price: 6999,
-//     originalPrice: 8999,
-//     discount: 22,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=400&q=80",
-//   },
-//   {
-//     id: 4,
-//     name: "Whirlpool Split Air Conditioner 12000 BTU",
-//     price: 3199,
-//     originalPrice: 4099,
-//     discount: 21,
-//     imageUrl:
-//       "https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=80",
-//   },
-//   {
-  //     id: 5,
-  //     name: "Sony PlayStation 5 Console Digital Edition",
-  //     price: 6799,
-  //     originalPrice: 8599,
-  //     discount: 20,
-  //     imageUrl:
-  //       "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
-//   },
-// ];
-
-
-const REVIEWS = [
-  {
-    id: 1,
-    name: "Ahmed B.",
-    rating: 5,
-    comment: "Excellent produit ! Livraison rapide et qualité incroyable.",
-    product: 'Samsung 55" TV',
-  },
-  {
-    id: 2,
-    name: "Sara L.",
-    rating: 4,
-    comment: "La machine à laver fonctionne parfaitement. Très satisfaite !",
-    product: "LG Vivace 9KG",
-  },
-  {
-    id: 3,
-    name: "Youssef M.",
-    rating: 5,
-    comment: "Le réfrigérateur garde tout super frais. Je recommande.",
-    product: "Bosch Serie 4",
-  },
-];
-
 // --- Fonctions d'aide ---
 const getCategoryDetails = (name) => {
   const map = {
@@ -157,61 +84,61 @@ const getCategoryDetails = (name) => {
 
 // --- Sous-composants ---
 
-const ReviewCard = ({ review }) => (
-  <div className="bg-white border border-gray-100 rounded-3xl p-6 m-1 shadow-sm hover:shadow-md transition-shadow duration-500">
-    <div className="flex items-center mb-4">
-      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-        {review.name.charAt(0)}
-      </div>
-      <div className="ml-4">
-        <h4 className="font-bold text-gray-800 text-sm">{review.name}</h4>
-        <p className="text-xs text-gray-400">{review.product}</p>
-      </div>
-    </div>
-    <p className="text-gray-700 text-sm mb-3">{review.comment}</p>
-    <div className="flex gap-1">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span
-          key={i}
-          className={i < review.rating ? "text-yellow-400" : "text-gray-300"}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  </div>
-);
+const ReviewCard = ({ review }) => {
+  // استخراج الاسم واسم المنتج من بيانات الباك اند مع قيم افتراضية
+  const userName = review.user?.name || "Client Galaxy";
+  const productName = review.product?.name || "Produit";
 
+  return (
+    <div className="bg-white border border-gray-100 rounded-3xl p-6 m-1 shadow-sm hover:shadow-md transition-shadow duration-500">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold uppercase">
+          {userName.charAt(0)}
+        </div>
+        <div className="ml-4">
+          <h4 className="font-bold text-gray-800 text-sm">{userName}</h4>
+          <p className="text-xs text-gray-400 truncate max-w-[200px]">{productName}</p>
+        </div>
+      </div>
+      <p className="text-gray-700 text-sm mb-3 line-clamp-3 min-h-[60px]">{review.comment}</p>
+      <div className="flex gap-1">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className={i < review.rating ? "text-yellow-400" : "text-gray-300"}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
-  const [isAdding, setIsAdding] = useState(false); // لحالة التحميل عند الضغط
+  const [isAdding, setIsAdding] = useState(false);
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated, openLogin } = useAuth();
 
-  // حساب نسبة الخصم
   const discount =
     product.originalPrice && product.originalPrice > product.price
       ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
       : 0;
 
-  // دالة الإضافة إلى السلة
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // 1. التحقق من تسجيل الدخول
     if (!isAuthenticated) {
       toast.error("Veuillez vous connecter pour ajouter au panier");
-      openLogin(); // فتح نافذة تسجيل الدخول تلقائياً
+      openLogin();
       return;
     }
 
     try {
       setIsAdding(true);
-      // 2. استدعاء الدالة من Context (والتي بدورها تراسل الـ API)
       await addToCart(product); 
-      
       toast.success(`${product.name} ajouté au panier !`, {
         icon: '🛒',
         style: {
@@ -235,43 +162,39 @@ const ProductCard = ({ product }) => {
       onClick={()=>navigate(`/product/${product.id}`)}
       className="bg-white cursor-pointer rounded-2xl overflow-hidden border border-gray-100 group hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
     >
-      {/* Image Container */}
       <div className="relative bg-gray-50 p-3 flex items-center justify-center aspect-square overflow-hidden">
-        {/* Discount Badge */}
         {discount > 0 && (
           <span className="absolute top-3 left-3 z-30 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
             -{discount}%
           </span>
         )}
 
-        {/* Wishlist Button */}
-<button
-  type="button"
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLiked(!liked);
-    toast(liked ? "Retiré des favoris" : "Ajouté aux favoris ❤️");
-  }}
-  className="absolute top-3 right-3 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-400 group/heart transition-all duration-300"
->
-  <motion.div
-    whileTap={{ scale: 1.5 }}
-    whileHover={{ scale: 1.1 }}
-    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-  >
-    <Heart
-      size={16}
-      className={`transition-colors duration-300 ${
-        liked 
-          ? "fill-red-500 text-red-500 hover:text-red-600 hover:fill-red-600" 
-          : "text-gray-400 group-hover/heart:text-white"
-      }`}
-    />
-  </motion.div>
-</button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setLiked(!liked);
+            toast(liked ? "Retiré des favoris" : "Ajouté aux favoris ❤️");
+          }}
+          className="absolute top-3 right-3 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-400 group/heart transition-all duration-300"
+        >
+          <motion.div
+            whileTap={{ scale: 1.5 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <Heart
+              size={16}
+              className={`transition-colors duration-300 ${
+                liked 
+                  ? "fill-red-500 text-red-500 hover:text-red-600 hover:fill-red-600" 
+                  : "text-gray-400 group-hover/heart:text-white"
+              }`}
+            />
+          </motion.div>
+        </button>
 
-        {/* Product Image */}
         <motion.img
           src={product.imageUrl}
           alt={product.name}
@@ -281,13 +204,11 @@ const ProductCard = ({ product }) => {
         />
       </div>
 
-      {/* Info Container */}
       <div className="p-4 flex flex-col flex-1 gap-2">
         <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 min-h-[40px] hover:text-blue-600 transition-colors">
           {product.name}
         </h3>
 
-        {/* Rating */}
         <div className="flex items-center gap-1 text-yellow-400">
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={12} fill={i < 4 ? "currentColor" : "none"} className={i >= 4 ? "text-gray-300" : ""} />
@@ -295,7 +216,6 @@ const ProductCard = ({ product }) => {
           <span className="text-gray-400 text-[10px] ml-1 font-medium">(4.8)</span>
         </div>
 
-        {/* Price Section */}
         <div className="mt-auto">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-blue-600">
@@ -308,7 +228,6 @@ const ProductCard = ({ product }) => {
             )}
           </div>
 
-          {/* Savings Info */}
           {discount > 0 && (
             <p className="text-green-600 text-[10px] font-bold uppercase tracking-wider">
               Économisez {(product.originalPrice - product.price).toLocaleString()} DH
@@ -316,12 +235,10 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Add to Cart Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           disabled={isAdding}
           onClick={handleAddToCart}
-          
           className={`mt-3 w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
             isAdding 
               ? "bg-gray-400 cursor-not-allowed" 
@@ -336,28 +253,30 @@ const ProductCard = ({ product }) => {
   );
 };
 
-
-
 export default function GalaxyHome() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [reviews, setReviews] = useState([]); // <-- تمت إضافة State جديد للمراجعات
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, prodRes] = await Promise.all([
+        // جلب الأقسام، المنتجات، والمراجعات من الباك اند في نفس الوقت
+        const [catRes, prodRes, revRes] = await Promise.all([
           API.get("/api/categories"),
           API.get("/api/products?limit=10"),
+          API.get("/api/reviews"), // تأكد أن هذا المسار يجلب جميع المراجعات
         ]);
-        console.log(prodRes.data);
 
         setCategories(catRes.data);
         setProducts(prodRes.data.data);
+        // نأخذ أحدث 8 مراجعات فقط لعرضها في الرئيسية حتى لا تثقل الصفحة
+        setReviews(revRes.data.slice(0, 8)); 
       } catch (err) {
         console.error(err.message);
-
-        toast.error("Erreur lors du chargement");
+        toast.error("Erreur lors du chargement des données");
       } finally {
         setLoading(false);
       }
@@ -381,7 +300,10 @@ export default function GalaxyHome() {
         className="bg-white flex py-4 border-b border-gray-100 sticky top-0 z-40 overflow-x-auto no-scrollbar"
       >
         <div className="max-w-7xl mx-auto px-4 flex gap-3">
-          <button className="px-5 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white shadow-lg shadow-blue-200 flex-shrink-0">
+          <button 
+            onClick={() => navigate("/products")}
+            className="px-5 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white shadow-lg shadow-blue-200 flex-shrink-0"
+          >
             Tous les produits
           </button>
           {categories.map((cat) => (
@@ -431,6 +353,7 @@ export default function GalaxyHome() {
                       {slide.desc}
                     </p>
                     <motion.button
+                      onClick={() => navigate("/products")}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all shadow-xl"
@@ -538,17 +461,23 @@ export default function GalaxyHome() {
               Voir toutes les offres <ChevronRight size={16} />
             </button>
           </motion.div>
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8"
-          >
-            {products?.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </motion.div>
+          {loading ? (
+             <div className="flex justify-center py-10">
+               <Loader2 className="animate-spin text-blue-600" size={40} />
+             </div>
+          ) : (
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8"
+            >
+              {products?.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </motion.div>
+          )}
         </section>
 
         {/* Avis Clients */}
@@ -563,24 +492,34 @@ export default function GalaxyHome() {
             </h2>
             <div className="h-1.5 w-16 bg-blue-600 rounded-full mt-2"></div>
           </motion.div>
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            slidesPerView={1}
-            spaceBetween={20}
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 5000 }}
-            breakpoints={{
-              640: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
-          >
-            {REVIEWS.map((review) => (
-              <SwiperSlide key={review.id}>
-                <ReviewCard review={review} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          
+          {loading ? (
+             <div className="flex justify-center py-10">
+               <Loader2 className="animate-spin text-blue-600" size={40} />
+             </div>
+          ) : reviews.length > 0 ? (
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              slidesPerView={1}
+              spaceBetween={20}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 5000 }}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+            >
+              {reviews.map((review) => (
+                <SwiperSlide key={review.id}>
+                  <ReviewCard review={review} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <p className="text-gray-400 text-center">Aucun avis pour le moment.</p>
+          )}
+
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -591,8 +530,6 @@ export default function GalaxyHome() {
           </motion.div>
         </section>
       </main>
-
-
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

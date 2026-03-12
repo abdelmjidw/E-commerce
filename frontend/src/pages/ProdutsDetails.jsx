@@ -10,7 +10,9 @@ import {
   ShieldCheck, 
   Truck, 
   RotateCcw,
-  Loader2
+  Loader2,
+  User,
+  Send
 } from "lucide-react";
 import API from "../api/api";
 import { useCart } from "../context/CartContext";
@@ -21,19 +23,31 @@ export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { isAuthenticated, openLogin } = useAuth();
+  const { isAuthenticated, openLogin, user } = useAuth(); // جلب user لمعرفة بياناته إذا لزم الأمر
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
+  // حقول المراجعات (Reviews)
+  const [reviews, setReviews] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [newRating, setNewRating] = useState(5);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await API.get(`/api/products/${id}`);
-        setProduct(res.data);
+        // جلب تفاصيل المنتج والمراجعات في نفس الوقت لتسريع التحميل
+        const [productRes, reviewsRes] = await Promise.all([
+          API.get(`/api/products/${id}`),
+          API.get(`/api/reviews?productId=${id}`)
+        ]);
+        
+        setProduct(productRes.data);
+        setReviews(reviewsRes.data);
       } catch (err) {
         toast.error("Produit introuvable");
         navigate("/products");
@@ -41,7 +55,7 @@ export default function ProductDetails() {
         setLoading(false);
       }
     };
-    fetchProduct();
+    fetchData();
   }, [id, navigate]);
 
   const handleAddToCart = async () => {
@@ -61,6 +75,45 @@ export default function ProductDetails() {
     }
   };
 
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error("Veuillez vous connecter pour laisser un avis");
+      openLogin();
+      return;
+    }
+    if (!newComment.trim()) {
+      toast.error("Le commentaire ne peut pas être vide");
+      return;
+    }
+
+    try {
+      setIsSubmittingReview(true);
+      const res = await API.post("/api/reviews", {
+        productId: id,
+        rating: newRating,
+        comment: newComment,
+      });
+      
+      // إضافة المراجعة الجديدة إلى القائمة محلياً (مع بيانات المستخدم الوهمية مؤقتاً لتظهر فوراً)
+      const newReview = {
+        ...res.data,
+        user: { name: user?.name || "Vous" }, // افترض أن لديك اسم المستخدم في الـ Context
+      };
+      
+      setReviews([newReview, ...reviews]);
+      setNewComment("");
+      setNewRating(5);
+      toast.success("Votre avis a été publié avec succès !");
+    } catch (error) {
+      // التعامل مع الخطأ P2002 الذي برمجته في الباك اند
+      const errorMsg = error.response?.data?.message || "Erreur lors de la publication de l'avis";
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -68,6 +121,11 @@ export default function ProductDetails() {
       </div>
     );
   }
+
+  // حساب متوسط التقييم
+  const averageRating = reviews.length > 0 
+    ? (reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length).toFixed(1)
+    : 0;
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -81,8 +139,7 @@ export default function ProductDetails() {
         </button>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16">
-        
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
         {/* Left: Image Section */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
@@ -111,9 +168,13 @@ export default function ProductDetails() {
           
           <div className="flex items-center gap-4 mb-8">
             <div className="flex items-center gap-1 text-yellow-400">
-              {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={16} fill={i < Math.round(averageRating) ? "currentColor" : "none"} />
+              ))}
             </div>
-            <span className="text-gray-400 font-bold text-sm">(4.9/5 - 124 avis)</span>
+            <span className="text-gray-400 font-bold text-sm">
+              ({averageRating}/5 - {reviews.length} avis)
+            </span>
           </div>
 
           <div className="mb-10">
@@ -133,7 +194,7 @@ export default function ProductDetails() {
           </div>
 
           <p className="text-gray-500 leading-relaxed mb-10 text-lg">
-            {product.description || "Découvrez la performance et l'élégance avec ce produit sélectionné par Galaxy Digital. Idéal pour votre confort quotidien."}
+            {product.description || "Découvrez la performance et l'élégance avec ce produit sélectionné par Galaxy Digital."}
           </p>
 
           {/* Quantity and Add to Cart */}
@@ -180,6 +241,77 @@ export default function ProductDetails() {
             </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="max-w-4xl mx-auto px-4 border-t border-gray-100 pt-16">
+        <h2 className="text-2xl font-black text-gray-900 mb-8">AVIS CLIENTS ({reviews.length})</h2>
+
+        {/* Formulaire d'ajout d'avis */}
+        <form onSubmit={handleReviewSubmit} className="bg-gray-50 p-6 rounded-[2rem] mb-12">
+          <h3 className="font-bold text-gray-800 mb-4">Laisser un avis</h3>
+          
+          <div className="flex gap-2 mb-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setNewRating(star)}
+                className={`${newRating >= star ? "text-yellow-400" : "text-gray-300"} hover:text-yellow-400 transition-colors`}
+              >
+                <Star size={24} fill={newRating >= star ? "currentColor" : "none"} />
+              </button>
+            ))}
+          </div>
+
+          <div className="relative">
+            <textarea
+              rows="3"
+              placeholder={isAuthenticated ? "Partagez votre expérience avec ce produit..." : "Veuillez vous connecter pour écrire un avis..."}
+              className="w-full bg-white border-none p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 transition-all outline-none resize-none"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              disabled={!isAuthenticated || isSubmittingReview}
+              onClick={() => !isAuthenticated && openLogin()}
+            />
+            <button
+              type="submit"
+              disabled={!isAuthenticated || isSubmittingReview || !newComment.trim()}
+              className="absolute bottom-4 right-4 bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700 disabled:bg-gray-300 transition-colors"
+            >
+              {isSubmittingReview ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+            </button>
+          </div>
+        </form>
+
+        {/* Liste des avis */}
+        <div className="space-y-6">
+          {reviews.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">Aucun avis pour le moment. Soyez le premier !</p>
+          ) : (
+            reviews.map((review) => (
+              <div key={review.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex gap-4">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 flex-shrink-0">
+                  <User size={24} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-bold text-gray-900">{review.user?.name || "Utilisateur"}</h4>
+                    <span className="text-xs text-gray-400">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="flex gap-1 text-yellow-400 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={14} fill={i < review.rating ? "currentColor" : "none"} />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 text-sm">{review.comment}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

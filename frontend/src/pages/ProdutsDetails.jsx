@@ -42,8 +42,8 @@ export default function ProductDetails() {
         setLoading(true);
         // جلب تفاصيل المنتج والمراجعات في نفس الوقت لتسريع التحميل
         const [productRes, reviewsRes] = await Promise.all([
-          API.get(`/api/products/${id}`),
-          API.get(`/api/reviews?productId=${id}`)
+          API.get(`/products/${id}`),
+          API.get(`/reviews?productId=${id}`)
         ]);
         
         setProduct(productRes.data);
@@ -89,7 +89,7 @@ export default function ProductDetails() {
 
     try {
       setIsSubmittingReview(true);
-      const res = await API.post("/api/reviews", {
+      const res = await API.post("/reviews", {
         productId: id,
         rating: newRating,
         comment: newComment,

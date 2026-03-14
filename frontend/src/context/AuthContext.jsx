@@ -1,14 +1,16 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import API from "../api/api"; // تأكد من مسار الـ API الخاص بك
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // To prevent flickering on refresh
+  const [loading, setLoading] = useState(true); // لمنع وميض الشاشة عند التحديث
   const [showLogin, setShowLogin] = useState(false);
 
-  // Check if user is logged in on initial load
+  // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
   useEffect(() => {
     const checkAuth = () => {
       try {
@@ -18,10 +20,13 @@ export const AuthProvider = ({ children }) => {
         if (savedUser && savedToken) {
           setUser(JSON.parse(savedUser));
           setIsAuthenticated(true);
+          
+          // أهم خطوة: إرفاق التوكن بالـ API ليتم إرساله مع كل الطلبات القادمة
+          API.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
         }
       } catch (error) {
-        console.error("Failed to restore auth state:", error);
-        logout(); // Clear storage if data is corrupted
+        console.error("Erreur de restauration de la session:", error);
+        logout(); // مسح البيانات في حال كانت تالفة
       } finally {
         setLoading(false);
       }
@@ -30,31 +35,43 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Modal Control Functions
+  // دوال التحكم في نافذة تسجيل الدخول (Modal)
   const openLogin = () => setShowLogin(true);
   const closeLogin = () => setShowLogin(false);
 
   /**
-   * Login function to update state and persistence
-   * @param {Object} userData - User details from API (id, name, email, role)
-   * @param {string} token - JWT Token from API
+   * دالة تسجيل الدخول لتحديث الحالة وحفظ البيانات
+   * @param {Object} userData - بيانات المستخدم من الباك اند (id, name, email, role)
+   * @param {string} token - رمز JWT 
    */
   const login = (userData, token) => {
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem("galaxy_token", token);
     localStorage.setItem("galaxy_user", JSON.stringify(userData));
+    
+    // إرفاق التوكن بالـ API للطلبات المستقبلية
+    API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   };
 
   /**
-   * Logout function to clear all auth data
+   * دالة تسجيل الخروج لمسح جميع بيانات الجلسة
    */
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-       toast.success("Logged out successfully 👋");
+    toast.success("Déconnecté avec succès 👋", {
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    });
     localStorage.removeItem("galaxy_token");
     localStorage.removeItem("galaxy_user");
+    
+    // إزالة التوكن من الـ API
+    delete API.defaults.headers.common["Authorization"];
   };
 
   return (
@@ -75,11 +92,11 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook for easy access
+// Hook مخصص لتسهيل الوصول للبيانات
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth doit être utilisé dans un AuthProvider");
   }
   return context;
 };

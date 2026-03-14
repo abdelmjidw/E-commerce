@@ -188,8 +188,8 @@ const ProductsPage = () => {
     const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          API.get("/api/categories"),
-          API.get("/api/products?limit=100"),
+          API.get("/categories"),
+          API.get("/products?limit=100"),
         ]);
         setCategories(catRes.data);
         setProducts(prodRes.data.data);

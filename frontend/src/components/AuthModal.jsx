@@ -39,7 +39,7 @@ if (!isLogin && formData.password !== formData.confirmPassword) {
   return;
 }
 
-    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+    const endpoint = isLogin ? "/auth/login" : "/auth/register";
 
     try {
       // Axios automatically stringifies the object to JSON
@@ -54,7 +54,7 @@ if (!isLogin && formData.password !== formData.confirmPassword) {
           toast.success("Login successful!");
         // Role-based Redirection
         if (data.user.role === "ADMIN") {
-          navigate("/admin/dashboard");
+          navigate("/dashboard");
         } else {
           navigate("/");
         }

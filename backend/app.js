@@ -8,7 +8,8 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import reviewRoutes from  "./routes/reviewRoutes.js";
-import cartRoutes from "./routes/cartRoutes.js"
+import cartRoutes from "./routes/cartRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -23,7 +24,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/cart",cartRoutes);
-
+app.use("/api/dashboard", dashboardRoutes);
 // Error Handling Middleware
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;

@@ -41,7 +41,7 @@ export default function Checkout() {
         price: item.product.price
       }));
 
-      await API.post("/api/orders", {
+      await API.post("/orders", {
         phone,
         address,
         totalPrice,

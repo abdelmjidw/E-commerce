@@ -2,28 +2,42 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Header from "./components/Header";
-import Checkout from "./pages/checkout.jsx";
+import Checkout from "./pages/Checkout.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import ProdutsDetails from "./pages/ProdutsDetails.jsx";
 import { Toaster } from "react-hot-toast";
 import Footer from "./components/Footer";
 import "./App.css";
 import AuthModal from "../src/components/AuthModal.jsx";
 import { motion } from "framer-motion";
-
+import { useAuth } from "./context/AuthContext.jsx";
 import { FaWhatsapp } from "react-icons/fa";
+
 function App() {
+  const { isAuthenticated, user, loading } = useAuth();
+
+  
+  if (loading) return null; 
+
   return (
     <>
-      <Toaster position="top-left" />
+      <Toaster position="top-center" />
       <Header />
       <AuthModal />
       <Routes>
+        {user?.role === "ADMIN" && (
+          <Route path="/dashboard" element={<Dashboard />} />
+        )}
+        
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProdutsDetails />} />
-        <Route path="/checkout" element={<Checkout />} />
+        
+  
+        {isAuthenticated && <Route path="/checkout" element={<Checkout />} />}
       </Routes>
-      {/* Bouton WhatsApp */}
+
+  
       <motion.a
         href="https://wa.me/212608936659"
         target="_blank"

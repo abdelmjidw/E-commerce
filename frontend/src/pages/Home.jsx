@@ -265,9 +265,9 @@ export default function GalaxyHome() {
       try {
         // جلب الأقسام، المنتجات، والمراجعات من الباك اند في نفس الوقت
         const [catRes, prodRes, revRes] = await Promise.all([
-          API.get("/api/categories"),
-          API.get("/api/products?limit=10"),
-          API.get("/api/reviews"), // تأكد أن هذا المسار يجلب جميع المراجعات
+          API.get("/categories"),
+          API.get("/products?limit=10"),
+          API.get("/reviews"), // تأكد أن هذا المسار يجلب جميع المراجعات
         ]);
 
         setCategories(catRes.data);

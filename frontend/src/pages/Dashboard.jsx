@@ -10,13 +10,13 @@ import {
 import API from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const { logout } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -76,10 +76,14 @@ const Dashboard = () => {
           <button className="flex items-center gap-3 w-full p-3 rounded-xl bg-blue-50 text-blue-600 font-semibold transition-all">
             <LayoutDashboard size={20} /> Tableau de bord
           </button>
-          <button className="flex items-center gap-3 w-full p-3 rounded-xl text-slate-500 hover:bg-slate-100 transition-all font-medium">
+          <button onClick={()=>{
+    navigate('/dashboard/products');
+          }} className="flex items-center gap-3 w-full p-3 rounded-xl text-slate-500 hover:bg-slate-100 transition-all font-medium">
             <Package size={20} /> Produits
           </button>
-          <button className="flex items-center gap-3 w-full p-3 rounded-xl text-slate-500 hover:bg-slate-100 transition-all font-medium">
+          <button onClick={()=>{
+    navigate('/dashboard/orders');
+          }} className="flex items-center gap-3 w-full p-3 rounded-xl text-slate-500 hover:bg-slate-100 transition-all font-medium">
             <ShoppingBag size={20} /> Commandes
           </button>
         </nav>

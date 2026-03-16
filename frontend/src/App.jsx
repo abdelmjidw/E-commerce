@@ -12,7 +12,8 @@ import AuthModal from "../src/components/AuthModal.jsx";
 import { motion } from "framer-motion";
 import { useAuth } from "./context/AuthContext.jsx";
 import { FaWhatsapp } from "react-icons/fa";
-
+import AdminProducts from "./pages/AdminProducts.jsx";
+import AdminOrders from "./pages/AdminOrders.jsx";
 function App() {
   const { isAuthenticated, user, loading } = useAuth();
 
@@ -25,10 +26,13 @@ function App() {
       <Header />
       <AuthModal />
       <Routes>
-        {user?.role === "ADMIN" && (
-          <Route path="/dashboard" element={<Dashboard />} />
-        )}
-        
+{user?.role === "ADMIN" && (
+  <>
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/dashboard/products" element={<AdminProducts />} />
+    <Route path="/dashboard/orders" element={<AdminOrders />} />
+  </>
+)}
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProdutsDetails />} />

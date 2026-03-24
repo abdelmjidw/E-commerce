@@ -152,7 +152,7 @@ const Header = () => {
                 )}
               </div>
             )}
-            {user.role != "ADMIN" && (
+            {user?.role != "ADMIN"&& (
               <>
                 <div className="w-[1.5px] h-8 bg-gray-200" />
                 {/* Shopping Cart Trigger */}

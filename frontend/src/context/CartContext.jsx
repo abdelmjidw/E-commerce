@@ -15,7 +15,7 @@ const fetchCart = async () => {
     return;
   }
   try {
-    const res = await API.get("/api/cart");
+    const res = await API.get("/cart");
     setCart(res.data.items || []);
   } catch (err) {
     console.error("Erreur de chargement du panier:", err);
@@ -30,12 +30,12 @@ const fetchCart = async () => {
   // add product
   const addToCart = async (product, quantity = 1) => {
     try {
-      await API.post("/api/cart", {
+      await API.post("/cart", {
         productId: product.id,
         quantity,
       });
 
-      fetchCart();
+      await fetchCart();
     } catch (err) {
       console.error("Add to cart error:", err);
     }
@@ -46,7 +46,7 @@ const fetchCart = async () => {
     if (newQuantity < 1) return;
 
     try {
-      await API.put(`/api/cart/${cartItemId}`, {
+      await API.put(`/cart/${cartItemId}`, {
         quantity: newQuantity,
       });
 
@@ -65,7 +65,7 @@ const fetchCart = async () => {
   // remove item
   const removeFromCart = async (cartItemId) => {
     try {
-      await API.delete(`/api/cart/${cartItemId}`);
+      await API.delete(`/cart/${cartItemId}`);
 
       setCart((prev) =>
         prev.filter((item) => item.id !== cartItemId)

@@ -191,6 +191,8 @@ const ProductsPage = () => {
           API.get("/categories"),
           API.get("/products?limit=100"),
         ]);
+        console.log(prodRes);
+        
         setCategories(catRes.data);
         setProducts(prodRes.data.data);
       } catch (err) {

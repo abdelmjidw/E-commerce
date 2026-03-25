@@ -17,7 +17,7 @@ const AdminOrders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [updateData, setUpdateData] = useState({ status: '', paymentStatus: '' });
-
+  const [menuOuvert, setMenuOuvert] = useState(false);
   const fetchOrders = async () => {
     try {
       const { data } = await API.get('/orders/all'); 
@@ -85,8 +85,11 @@ const AdminOrders = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex ">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col shadow-sm">
+      {/* Sidebar */}      {menuOuvert && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[50] md:hidden" onClick={() => setMenuOuvert(false)} />
+      )}
+      <aside        className={`fixed inset-y-0 left-0 z-[55] w-64 bg-white border-r border-slate-200 p-6 flex flex-col transition-transform duration-300 ease-in-out
+          ${menuOuvert ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         <h2 className="text-2xl font-bold text-blue-600 mb-10 flex items-center gap-2">
            <LayoutDashboard /> Galaxy Admin
         </h2>
@@ -105,7 +108,7 @@ const AdminOrders = () => {
           <LogOut size={20} /> Déconnexion
         </button>
       </aside>
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 md:ml-64">
         <header className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-black text-slate-800">Gestion des Commandes</h1>

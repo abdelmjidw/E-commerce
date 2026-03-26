@@ -144,18 +144,12 @@ const AdminProducts = () => {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       
       {/* Navbar Mobile */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b sticky top-0 z-[54]">
-        <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2">
-          <LayoutDashboard size={24} /> Galaxy Admin
-        </h2>
-        <button onClick={() => setMenuOuvert(!menuOuvert)} className="p-2 hover:bg-slate-100 rounded-lg">
-          {menuOuvert ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
       {/* Overlay Mobile */}
-      {menuOuvert && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[50] md:hidden" onClick={() => setMenuOuvert(false)} />
+     {menuOuvert && (
+        <div
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[50] md:hidden"
+          onClick={() => setMenuOuvert(false)}
+        />
       )}
 
       {/* Sidebar - FIXED & Consistent */}
@@ -163,32 +157,49 @@ const AdminProducts = () => {
         className={`fixed inset-y-0 left-0 z-[55] w-64 bg-white border-r border-slate-200 p-6 flex flex-col transition-transform duration-300 ease-in-out
           ${menuOuvert ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
-        <h2 className="hidden md:flex text-2xl font-bold text-blue-600 mb-10 items-center gap-2">
-          <LayoutDashboard /> Galaxy Admin
-        </h2>
-        <nav className="space-y-2 flex-1">
-          <NavLink to="/dashboard" end className={linkClass}>
-            <LayoutDashboard size={20} /> Tableau de bord
-          </NavLink>
-          <NavLink to="/dashboard/products" className={linkClass}>
-            <Package size={20} /> Produits
-          </NavLink>
-          <NavLink to="/dashboard/orders" className={linkClass}>
-            <ShoppingBag size={20} /> Commandes
-          </NavLink>
-        </nav>
-        <button onClick={logout} className="flex items-center gap-3 text-red-500 p-3 hover:bg-red-50 rounded-xl mt-auto font-bold transition-colors group">
-          <LogOut size={20} className="group-hover:translate-x-1 transition-transform" /> Déconnexion
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
+            <LayoutDashboard /> Galaxy Admin
+          </h2>
+          <button className="md:hidden p-2 text-slate-400" onClick={() => setMenuOuvert(false)}>
+            <X size={24} />
+          </button>
+        </div>
+<nav className="space-y-2 flex-1">
+  <NavLink to="/dashboard" end className={linkClass}>
+    <LayoutDashboard size={20} /> Tableau de bord
+  </NavLink>
+  
+  <NavLink to="/dashboard/products" className={linkClass}>
+    <Package size={20} /> Produits
+  </NavLink>
+  
+  <NavLink to="/dashboard/orders" className={linkClass}>
+    <ShoppingBag size={20} /> Commandes
+  </NavLink>
+</nav>
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 text-red-500 p-3 hover:bg-red-50 rounded-xl transition-all font-bold"
+        >
+          <LogOut size={20} /> Déconnexion
         </button>
       </aside>
 
       {/* Main Content - md:ml-64 used to offset fixed sidebar */}
       <main className={`transition-all duration-300 p-4 md:p-8 ${menuOuvert ? "blur-sm md:blur-none" : ""} md:ml-64`}>
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">Gestion du Catalogue</h1>
-            <p className="text-slate-500 mt-1 font-medium italic">{products.length} articles répertoriés.</p>
-          </div>
+          
+            <div className="flex items-center gap-3">
+              {/* Mobile Menu Trigger */}
+              <button 
+                onClick={() => setMenuOuvert(true)}
+                className="p-2 bg-white border border-slate-200 rounded-lg md:hidden text-slate-600"
+              >
+                <Menu size={20} />
+              </button>
+              <h1 className="text-xl md:text-3xl font-black text-slate-800">Produits</h1>
+            </div>  
           <button 
             onClick={() => openModal()} 
             className="w-full sm:w-auto flex justify-center items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 shadow-sm transition-all active:scale-95"
